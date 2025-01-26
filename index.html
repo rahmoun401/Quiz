@@ -1,60 +1,125 @@
-let currentQuestion = 0;
-let correctAnswers = 0;
-
-function showQuestion() {
-    const question = questions[currentQuestion];
-    const quizContainer = document.getElementById('quiz-container');
-    quizContainer.innerHTML = `
-        <div class="question">${question.question}</div>
-        <div class="choices">
-            <button class="red" onclick="checkAnswer(1)">${question.choices[0]}</button>
-            <button class="yellow" onclick="checkAnswer(2)">${question.choices[1]}</button>
-            <button class="green" onclick="checkAnswer(3)">${question.choices[2]}</button>
-        </div>
-    `;
-
-    setTimeout(function() {
-        showCorrectAnswer();
-    }, 10000);
-}
-
-function checkAnswer(choice) {
-    const question = questions[currentQuestion];
-    if (choice === question.correct) {
-        correctAnswers++;
-    }
-    currentQuestion++;
-    if (currentQuestion < questions.length) {
-        showQuestion();
-    } else {
-        showResult();
-    }
-}
-
-function showCorrectAnswer() {
-    const question = questions[currentQuestion];
-    const buttons = document.querySelectorAll('.choices button');
-    buttons.forEach((button, index) => {
-        if (index + 1 === question.correct) {
-            button.classList.add('white');
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار ظواهر لغوية</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: center;
+            background-color: #f2f2f2;
+            margin-top: 50px;
         }
-    });
-}
+        .question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .answers button {
+            background-color: #f0f0f0;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            margin: 10px;
+            width: 200px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .answers button:hover {
+            opacity: 0.8;
+        }
+        .correct {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .incorrect {
+            background-color: #f44336;
+            color: white;
+        }
+        .timer {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        .result {
+            font-size: 22px;
+            margin-top: 30px;
+        }
+        .emoji {
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="question">ما هو جمع كلمة "كتاب"؟</div>
+    <div class="answers">
+        <button class="answer" onclick="checkAnswer('incorrect')">كتابات</button>
+        <button class="answer" onclick="checkAnswer('correct')">كتب</button>
+        <button class="answer" onclick="checkAnswer('incorrect')">كتاباتين</button>
+    </div>
 
-function showResult() {
-    const resultContainer = document.getElementById('result');
-    if (correctAnswers >= 8) {
-        resultContainer.innerHTML = `أحسنت! حصلت على ${correctAnswers} إجابة صحيحة! 😀`;
-    } else {
-        resultContainer.innerHTML = `حاول مرة أخرى! حصلت على ${correctAnswers} إجابة صحيحة! 😢`;
-    }
-}
+    <div class="timer">الوقت المتبقي: <span id="time">10</span> ثواني</div>
+    <div class="result"></div>
 
-showQuestion();
-</script>
+    <script>
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let timer = 10;
+        let timerInterval;
 
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timer > 0) {
+                    timer--;
+                    document.getElementById('time').innerText = timer;
+                } else {
+                    clearInterval(timerInterval);
+                    showResult();
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(answer) {
+            clearInterval(timerInterval);
+            if (answer === 'correct') {
+                correctAnswers++;
+                document.querySelector('.result').innerHTML = `<div class="emoji">✅</div> الجواب صحيح!`;
+                document.querySelectorAll('.answer').forEach(button => button.disabled = true);
+                document.querySelector('.answers').querySelector('button:nth-child(2)').classList.add('correct');
+            } else {
+                incorrectAnswers++;
+                document.querySelector('.result').innerHTML = `<div class="emoji">❌</div> الجواب خاطئ!`;
+                document.querySelectorAll('.answer').forEach(button => button.disabled = true);
+                document.querySelector('.answers').querySelector('button:nth-child(2)').classList.add('correct');
+            }
+            setTimeout(() => {
+                resetQuestion();
+            }, 2000);
+        }
+
+        function resetQuestion() {
+            document.querySelector('.result').innerHTML = '';
+            document.querySelectorAll('.answer').forEach(button => {
+                button.disabled = false;
+                button.classList.remove('correct', 'incorrect');
+            });
+            timer = 10;
+            startTimer();
+        }
+
+        function showResult() {
+            document.querySelector('.result').innerHTML = `
+                <div class="emoji">⏱️</div>
+                انتهى الوقت!
+                <div class="result">الجواب الصحيح هو "كتب".</div>
+            `;
+        }
+
+        startTimer();
+    </script>
 </body>
 </html>
+
 
 
 
