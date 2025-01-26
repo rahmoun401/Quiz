@@ -56,9 +56,9 @@
 <body>
     <div class="question" id="question"></div>
     <div class="answers">
-        <button class="answer red" onclick="checkAnswer(0)">الإجابة 1</button>
-        <button class="answer green" onclick="checkAnswer(1)">الإجابة 2</button>
-        <button class="answer yellow" onclick="checkAnswer(2)">الإجابة 3</button>
+        <button class="answer red" onclick="checkAnswer(0)">اختيار 1</button>
+        <button class="answer green" onclick="checkAnswer(1)">اختيار 2</button>
+        <button class="answer yellow" onclick="checkAnswer(2)">اختيار 3</button>
     </div>
 
     <div class="timer">الوقت المتبقي: <span id="time">10</span> ثواني</div>
@@ -72,16 +72,16 @@
         let timerInterval;
         
         const questions = [
-            { question: "ما هو جمع كلمة 'كتاب'؟", correctAnswer: 1 },
-            { question: "ما هو مرادف كلمة 'جميل'؟", correctAnswer: 0 },
-            { question: "ما هو ضد كلمة 'سهل'؟", correctAnswer: 2 },
-            { question: "ما هو جمع كلمة 'شجرة'؟", correctAnswer: 0 },
-            { question: "ما هو مرادف كلمة 'سعيد'؟", correctAnswer: 1 },
-            { question: "ما هو ضد كلمة 'طويل'؟", correctAnswer: 2 },
-            { question: "ما هو جمع كلمة 'قلم'؟", correctAnswer: 1 },
-            { question: "ما هو مرادف كلمة 'قوي'؟", correctAnswer: 0 },
-            { question: "ما هو ضد كلمة 'بارد'؟", correctAnswer: 2 },
-            { question: "ما هو جمع كلمة 'طفل'؟", correctAnswer: 1 }
+            { question: "ما هو جمع كلمة 'كتاب'؟", answers: ["كتب", "كتابات", "كتاباتين"], correctAnswer: 0 },
+            { question: "ما هو مرادف كلمة 'جميل'؟", answers: ["وسيم", "قبيح", "قوي"], correctAnswer: 0 },
+            { question: "ما هو ضد كلمة 'سهل'؟", answers: ["صعب", "خالي", "مستقيم"], correctAnswer: 0 },
+            { question: "ما هو جمع كلمة 'شجرة'؟", answers: ["أشجار", "شجيرات", "أشجارين"], correctAnswer: 0 },
+            { question: "ما هو مرادف كلمة 'سعيد'؟", answers: ["مبتهج", "حزين", "غاضب"], correctAnswer: 0 },
+            { question: "ما هو ضد كلمة 'طويل'؟", answers: ["قصير", "عالي", "جديد"], correctAnswer: 0 },
+            { question: "ما هو جمع كلمة 'قلم'؟", answers: ["أقلام", "قلمات", "قلمين"], correctAnswer: 0 },
+            { question: "ما هو مرادف كلمة 'قوي'؟", answers: ["شديد", "ضعيف", "معتدل"], correctAnswer: 0 },
+            { question: "ما هو ضد كلمة 'بارد'؟", answers: ["ساخن", "دافئ", "لطيف"], correctAnswer: 0 },
+            { question: "ما هو جمع كلمة 'طفل'؟", answers: ["أطفال", "طفول", "أطفلين"], correctAnswer: 0 }
         ];
 
         function startTimer() {
@@ -124,13 +124,17 @@
             timer = 10;
             startTimer();
             document.getElementById('question').innerText = questions[currentQuestionIndex].question;
+            const answerButtons = document.querySelectorAll('.answers button');
+            for (let i = 0; i < answerButtons.length; i++) {
+                answerButtons[i].innerText = questions[currentQuestionIndex].answers[i];
+            }
         }
 
         function showResult() {
             document.querySelector('.result').innerHTML = `
                 <div class="emoji">⏱️</div>
                 انتهى الوقت!
-                <div class="result">الجواب الصحيح هو الإجابة ${questions[currentQuestionIndex].correctAnswer + 1}.</div>
+                <div class="result">الجواب الصحيح هو: ${questions[currentQuestionIndex].answers[questions[currentQuestionIndex].correctAnswer]}</div>
             `;
         }
 
@@ -147,6 +151,7 @@
     </script>
 </body>
 </html>
+
 
 
 
