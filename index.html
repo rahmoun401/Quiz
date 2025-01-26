@@ -28,9 +28,9 @@ def quiz():
     # المرور على جميع الأسئلة
     for idx, q in enumerate(questions, 1):
         print(f"السؤال {idx}: {q['question']}")
-        print(f"1. \033[31m{q['choices'][0]}\033[0m")  # الإجابة الأولى باللون الأحمر
-        print(f"2. \033[33m{q['choices'][1]}\033[0m")  # الإجابة الثانية باللون الأصفر
-        print(f"3. \033[32m{q['choices'][2]}\033[0m")  # الإجابة الثالثة باللون الأخضر
+        print(f"1. {q['choices'][0]}")  # الإجابة الأولى
+        print(f"2. {q['choices'][1]}")  # الإجابة الثانية
+        print(f"3. {q['choices'][2]}")  # الإجابة الثالثة
 
         # الحصول على إجابة الطالب
         while True:
