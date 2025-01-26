@@ -33,6 +33,10 @@
             background-color: green;
             color: white;
         }
+        .neutral {
+            background-color: yellow;
+            color: black;
+        }
         #result {
             font-size: 22px;
             margin-top: 20px;
@@ -51,33 +55,27 @@
         <div id="result"></div>
         <div id="timer">10</div>
     </div>
-
+    <audio id="yes-sound" src="yes.mp3"></audio>
+    <audio id="no-sound" src="no.mp3"></audio>
+    <audio id="timer-sound" src="timer.mp3"></audio>
+    <audio id="win-sound" src="win.mp3"></audio>
+    <audio id="lose-sound" src="lose.mp3"></audio>
+    
     <script>
         const quizData = [
             { question: "ما هو نوع الكلمة 'المدرسة'؟", options: ["اسم", "فعل", "حرف"], correct: 0 },
-            { question: "ما هو ضد كلمة 'سريع'؟", options: ["بطيء", "قوي", "جميل"], correct: 0 },
-            { question: "ما هي علامة رفع الفاعل؟", options: ["الضمة", "الفتحة", "السكون"], correct: 0 },
-            { question: "ما هو جمع كلمة 'كتاب'؟", options: ["كتب", "كتابات", "مكتبة"], correct: 0 },
-            { question: "ما هي الكلمة المرادفة لـ 'سعيد'؟", options: ["حزين", "مسرور", "متعب"], correct: 1 },
-            { question: "ما هو الفعل الماضي من 'يكتب'؟", options: ["كتب", "كاتب", "مكتوب"], correct: 0 },
-            { question: "ما هي أداة النفي في الجملة 'لم يذهب أحمد'؟", options: ["لم", "لن", "لا"], correct: 0 },
-            { question: "ما هي علامة نصب المفعول به؟", options: ["الفتحة", "الكسرة", "السكون"], correct: 0 },
-            { question: "ما هو ضد كلمة 'جميل'؟", options: ["قبيح", "رائع", "أنيق"], correct: 0 },
-            { question: "ما هو مصدر الفعل 'يقرأ'؟", options: ["قراءة", "يقرأ", "مقروء"], correct: 0 },
-            { question: "ما هو الفعل المضارع من 'أكل'؟", options: ["يأكل", "يأكلون", "أكل"], correct: 0 },
-            { question: "ما هو المثنى من 'طالب'؟", options: ["طالبان", "طلبة", "طلابي"], correct: 0 },
-            { question: "ما هو المفرد من 'أصدقاء'؟", options: ["صديق", "صديقة", "صداقات"], correct: 0 },
-            { question: "ما هو جمع كلمة 'قلم'؟", options: ["أقلام", "قلمة", "قلمون"], correct: 0 },
-            { question: "ما هو نوع الكلمة 'يكتب'؟", options: ["فعل", "اسم", "حرف"], correct: 0 }
+            { question: "ما هو ضد كلمة 'سريع'؟", options: ["بطيء", "قوي", "جميل"], correct: 0 }
         ];
 
         let currentQuestion = 0;
+        let score = 0;
         let timer;
-        
+
         function loadQuestion() {
             clearTimeout(timer);
             document.getElementById('result').innerText = '';
             document.getElementById('timer').innerText = '10';
+            document.getElementById('timer-sound').play();
             
             const questionData = quizData[currentQuestion];
             document.getElementById('question-text').innerText = questionData.question;
@@ -110,14 +108,45 @@
         function checkAnswer(selectedIndex) {
             clearInterval(timer);
             const correctIndex = quizData[currentQuestion].correct;
-            document.getElementById('result').innerText = selectedIndex === correctIndex ? 'إجابة صحيحة!' : 'إجابة خاطئة! الإجابة الصحيحة: ' + quizData[currentQuestion].options[correctIndex];
-            setTimeout(() => { currentQuestion = (currentQuestion + 1) % quizData.length; loadQuestion(); }, 3000);
+            if (selectedIndex === correctIndex) {
+                document.getElementById('result').innerText = 'إجابة صحيحة!';
+                document.getElementById('yes-sound').play();
+                score++;
+            } else {
+                document.getElementById('result').innerText = 'إجابة خاطئة!';
+                document.getElementById('no-sound').play();
+            }
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    loadQuestion();
+                } else {
+                    showFinalResult();
+                }
+            }, 3000);
         }
 
         function showCorrectAnswer() {
-            const correctIndex = quizData[currentQuestion].correct;
-            document.getElementById('result').innerText = 'الوقت انتهى! الإجابة الصحيحة: ' + quizData[currentQuestion].options[correctIndex];
-            setTimeout(() => { currentQuestion = (currentQuestion + 1) % quizData.length; loadQuestion(); }, 3000);
+            document.getElementById('result').innerText = 'الوقت انتهى!';
+            document.getElementById('no-sound').play();
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    loadQuestion();
+                } else {
+                    showFinalResult();
+                }
+            }, 3000);
+        }
+
+        function showFinalResult() {
+            const resultMessage = score >= quizData.length / 2 ? '😃 أحسنت!' : '😢 حاول مرة أخرى';
+            document.getElementById('result').innerText = resultMessage;
+            if (score >= quizData.length / 2) {
+                document.getElementById('win-sound').play();
+            } else {
+                document.getElementById('lose-sound').play();
+            }
         }
 
         loadQuestion();
