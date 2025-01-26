@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz pour 6ème primaire</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .options button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        #result {
+            font-size: 22px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-container">
+        <div class="question" id="question-text"></div>
+        <div class="options" id="options"></div>
+        <div id="result"></div>
+        <div id="timer">10</div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "ما هو نوع الكلمة 'المدرسة'؟",
+                options: ["اسم", "فعل", "حرف"],
+                correct: 0
+            },
+            {
+                question: "ما هو ضد كلمة 'سريع'؟",
+                options: ["بطيء", "قوي", "جميل"],
+                correct: 0
+            },
+            {
+                question: "ما هي علامة رفع الفاعل؟",
+                options: ["الضمة", "الفتحة", "السكون"],
+                correct: 0
+            }
+        ];
+
+        let currentQuestion = 0;
+        let timer;
+        
+        function loadQuestion() {
+            clearTimeout(timer);
+            document.getElementById('result').innerText = '';
+            document.getElementById('timer').innerText = '10';
+            
+            const questionData = quizData[currentQuestion];
+            document.getElementById('question-text').innerText = questionData.question;
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            questionData.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.innerText = option;
+                button.onclick = () => checkAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+            
+            startTimer();
+        }
+
+        function startTimer() {
+            let timeLeft = 10;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft;
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    showCorrectAnswer();
+                }
+            }, 1000);
+        }
+
+        function checkAnswer(selectedIndex) {
+            clearInterval(timer);
+            const correctIndex = quizData[currentQuestion].correct;
+            if (selectedIndex === correctIndex) {
+                document.getElementById('result').innerText = 'إجابة صحيحة!';
+            } else {
+                document.getElementById('result').innerText = 'إجابة خاطئة! الإجابة الصحيحة: ' + quizData[currentQuestion].options[correctIndex];
+            }
+            
+            setTimeout(() => {
+                currentQuestion = (currentQuestion + 1) % quizData.length;
+                loadQuestion();
+            }, 3000);
+        }
+
+        function showCorrectAnswer() {
+            const correctIndex = quizData[currentQuestion].correct;
+            document.getElementById('result').innerText = 'الوقت انتهى! الإجابة الصحيحة: ' + quizData[currentQuestion].options[correctIndex];
+            
+            setTimeout(() => {
+                currentQuestion = (currentQuestion + 1) % quizData.length;
+                loadQuestion();
+            }, 3000);
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
