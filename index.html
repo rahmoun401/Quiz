@@ -17,7 +17,6 @@
             margin-bottom: 20px;
         }
         .answers button {
-            background-color: #f0f0f0;
             border: none;
             padding: 15px;
             font-size: 18px;
@@ -26,16 +25,20 @@
             cursor: pointer;
             border-radius: 5px;
         }
-        .answers button:hover {
-            opacity: 0.8;
+        .red {
+            background-color: #f44336;
+            color: white;
         }
-        .correct {
+        .green {
             background-color: #4CAF50;
             color: white;
         }
-        .incorrect {
-            background-color: #f44336;
-            color: white;
+        .yellow {
+            background-color: #ffeb3b;
+            color: black;
+        }
+        .answers button:hover {
+            opacity: 0.8;
         }
         .timer {
             font-size: 20px;
@@ -51,11 +54,11 @@
     </style>
 </head>
 <body>
-    <div class="question">ما هو جمع كلمة "كتاب"؟</div>
+    <div class="question" id="question"></div>
     <div class="answers">
-        <button class="answer" onclick="checkAnswer('incorrect')">كتابات</button>
-        <button class="answer" onclick="checkAnswer('correct')">كتب</button>
-        <button class="answer" onclick="checkAnswer('incorrect')">كتاباتين</button>
+        <button class="answer red" onclick="checkAnswer(0)">الإجابة 1</button>
+        <button class="answer green" onclick="checkAnswer(1)">الإجابة 2</button>
+        <button class="answer yellow" onclick="checkAnswer(2)">الإجابة 3</button>
     </div>
 
     <div class="timer">الوقت المتبقي: <span id="time">10</span> ثواني</div>
@@ -64,8 +67,22 @@
     <script>
         let correctAnswers = 0;
         let incorrectAnswers = 0;
+        let currentQuestionIndex = 0;
         let timer = 10;
         let timerInterval;
+        
+        const questions = [
+            { question: "ما هو جمع كلمة 'كتاب'؟", correctAnswer: 1 },
+            { question: "ما هو مرادف كلمة 'جميل'؟", correctAnswer: 0 },
+            { question: "ما هو ضد كلمة 'سهل'؟", correctAnswer: 2 },
+            { question: "ما هو جمع كلمة 'شجرة'؟", correctAnswer: 0 },
+            { question: "ما هو مرادف كلمة 'سعيد'؟", correctAnswer: 1 },
+            { question: "ما هو ضد كلمة 'طويل'؟", correctAnswer: 2 },
+            { question: "ما هو جمع كلمة 'قلم'؟", correctAnswer: 1 },
+            { question: "ما هو مرادف كلمة 'قوي'؟", correctAnswer: 0 },
+            { question: "ما هو ضد كلمة 'بارد'؟", correctAnswer: 2 },
+            { question: "ما هو جمع كلمة 'طفل'؟", correctAnswer: 1 }
+        ];
 
         function startTimer() {
             timerInterval = setInterval(() => {
@@ -81,44 +98,56 @@
 
         function checkAnswer(answer) {
             clearInterval(timerInterval);
-            if (answer === 'correct') {
+            if (answer === questions[currentQuestionIndex].correctAnswer) {
                 correctAnswers++;
-                document.querySelector('.result').innerHTML = `<div class="emoji">✅</div> الجواب صحيح!`;
-                document.querySelectorAll('.answer').forEach(button => button.disabled = true);
-                document.querySelector('.answers').querySelector('button:nth-child(2)').classList.add('correct');
+                document.querySelector('.result').innerHTML = `<div class="emoji">😄</div> الجواب صحيح!`;
             } else {
                 incorrectAnswers++;
-                document.querySelector('.result').innerHTML = `<div class="emoji">❌</div> الجواب خاطئ!`;
-                document.querySelectorAll('.answer').forEach(button => button.disabled = true);
-                document.querySelector('.answers').querySelector('button:nth-child(2)').classList.add('correct');
+                document.querySelector('.result').innerHTML = `<div class="emoji">😞</div> الجواب خاطئ!`;
             }
+            document.querySelectorAll('.answer').forEach(button => button.disabled = true);
             setTimeout(() => {
-                resetQuestion();
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    loadNextQuestion();
+                } else {
+                    showFinalResults();
+                }
             }, 2000);
         }
 
-        function resetQuestion() {
+        function loadNextQuestion() {
             document.querySelector('.result').innerHTML = '';
             document.querySelectorAll('.answer').forEach(button => {
                 button.disabled = false;
-                button.classList.remove('correct', 'incorrect');
             });
             timer = 10;
             startTimer();
+            document.getElementById('question').innerText = questions[currentQuestionIndex].question;
         }
 
         function showResult() {
             document.querySelector('.result').innerHTML = `
                 <div class="emoji">⏱️</div>
                 انتهى الوقت!
-                <div class="result">الجواب الصحيح هو "كتب".</div>
+                <div class="result">الجواب الصحيح هو الإجابة ${questions[currentQuestionIndex].correctAnswer + 1}.</div>
             `;
         }
 
-        startTimer();
+        function showFinalResults() {
+            document.querySelector('.result').innerHTML = `
+                <div class="emoji">🏁</div>
+                انتهى الاختبار!<br>
+                الإجابات الصحيحة: ${correctAnswers}<br>
+                الإجابات الخاطئة: ${incorrectAnswers}
+            `;
+        }
+
+        loadNextQuestion();
     </script>
 </body>
 </html>
+
 
 
 
