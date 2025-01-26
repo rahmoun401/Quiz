@@ -1,194 +1,57 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مسابقة الظواهر اللغوية</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            direction: rtl;
-            text-align: center;
-            margin-top: 50px;
-        }
-        .question {
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-        .choices {
-            margin: 20px 0;
-        }
-        .choices button {
-            width: 150px;
-            height: 40px;
-            font-size: 18px;
-            margin: 10px;
-            border: none;
-            cursor: pointer;
-        }
-        .red {
-            background-color: red;
-            color: white;
-        }
-        .yellow {
-            background-color: yellow;
-            color: black;
-        }
-        .green {
-            background-color: green;
-            color: white;
-        }
-        .white {
-            color: white;
-        }
-        #result {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
+let currentQuestion = 0;
+let correctAnswers = 0;
 
-    <h1>مسابقة الظواهر اللغوية - المستوى السادس ابتدائي</h1>
-    <div id="quiz-container">
-        <!-- ستظهر الأسئلة هنا -->
-    </div>
-    <div id="result"></div>
+function showQuestion() {
+    const question = questions[currentQuestion];
+    const quizContainer = document.getElementById('quiz-container');
+    quizContainer.innerHTML = `
+        <div class="question">${question.question}</div>
+        <div class="choices">
+            <button class="red" onclick="checkAnswer(1)">${question.choices[0]}</button>
+            <button class="yellow" onclick="checkAnswer(2)">${question.choices[1]}</button>
+            <button class="green" onclick="checkAnswer(3)">${question.choices[2]}</button>
+        </div>
+    `;
 
-    <script>
-        const questions = [
-            {
-                question: "ما هو الفعل الصحيح؟",
-                choices: ["يذهب", "يرتجف", "يزحف"],
-                correct: 1
-            },
-            {
-                question: "اختر الجملة الصحيحة من حيث النحو:",
-                choices: ["أنا ألعب مع أصدقائي", "أنا ألعب مع أصدقائه", "أنا ألعب مع صديقي"],
-                correct: 3
-            },
-            {
-                question: "ما هو اسم الإشارة الذي يشير إلى الأشياء البعيدة؟",
-                choices: ["هذه", "تلك", "هذا"],
-                correct: 2
-            },
-            {
-                question: "أي الكلمات التالية هي فعل صحيح؟",
-                choices: ["أحب", "أكمل", "يجري"],
-                correct: 1
-            },
-            {
-                question: "اختر الجملة الصحيحة:",
-                choices: ["ذهبنا الى المدرسة", "ذهبنا إلى المدرسة", "ذهبنا الى المدرسة."],
-                correct: 2
-            },
-            {
-                question: "ما هو الاسم الذي يدل على شيء بعيد؟",
-                choices: ["هذه", "تلك", "هذا"],
-                correct: 2
-            },
-            {
-                question: "أي الجمل التالية صحيحة؟",
-                choices: ["هو ذهب الى البيت", "هو ذهب إلى البيت", "هو ذهب الى بيت"],
-                correct: 2
-            },
-            {
-                question: "أي من الأفعال التالية فعل ماضٍ؟",
-                choices: ["يذهب", "ذهب", "يذهبون"],
-                correct: 2
-            },
-            {
-                question: "اختر الجملة الصحيحة من حيث ترتيب الكلمات:",
-                choices: ["ذهبوا إلى المدرسة", "ذهبوا الى المدرسة", "ذهبوا الى المدرسة."],
-                correct: 1
-            },
-            {
-                question: "ما هو اسم الإشارة الذي يشير إلى شيء قريب؟",
-                choices: ["هذه", "تلك", "هذا"],
-                correct: 1
-            },
-            {
-                question: "أي من الأفعال التالية في صيغة المضارع؟",
-                choices: ["أحب", "أحبب", "أحببت"],
-                correct: 1
-            },
-            {
-                question: "أي الجمل التالية صحيحة؟",
-                choices: ["أشعر بسعادة", "أشعر بسعادتي", "أشعر بالسعادة"],
-                correct: 3
-            },
-            {
-                question: "ما هو الضمير في الجملة التالية: 'أنت ذهبت إلى المدرسة'؟",
-                choices: ["أنت", "ذهبت", "إلى"],
-                correct: 1
-            },
-            {
-                question: "اختر الجملة الصحيحة من حيث النحو:",
-                choices: ["الطفل ذهب إلى المدرسة", "الطفل ذهب الى المدرسة", "الطفل ذهب إلى المدرسة."],
-                correct: 1
-            },
-            {
-                question: "أي الجمل التالية صحيحة؟",
-                choices: ["هو معلم في المدرسة", "هو معلم في المدرسة.", "هو معلم في المدرسه"],
-                correct: 2
-            }
-        ];
+    setTimeout(function() {
+        showCorrectAnswer();
+    }, 10000);
+}
 
-        let currentQuestion = 0;
-        let correctAnswers = 0;
-
-        function showQuestion() {
-            const question = questions[currentQuestion];
-            const quizContainer = document.getElementById('quiz-container');
-            quizContainer.innerHTML = `
-                <div class="question">${question.question}</div>
-                <div class="choices">
-                    <button class="red" onclick="checkAnswer(1)">${question.choices[0]}</button>
-                    <button class="yellow" onclick="checkAnswer(2)">${question.choices[1]}</button>
-                    <button class="green" onclick="checkAnswer(3)">${question.choices[2]}</button>
-                </div>
-            `;
-
-            setTimeout(function() {
-                showCorrectAnswer();
-            }, 10000);
-        }
-
-        function checkAnswer(choice) {
-            const question = questions[currentQuestion];
-            if (choice === question.correct) {
-                correctAnswers++;
-            }
-            currentQuestion++;
-            if (currentQuestion < questions.length) {
-                showQuestion();
-            } else {
-                showResult();
-            }
-        }
-
-        function showCorrectAnswer() {
-            const question = questions[currentQuestion];
-            const buttons = document.querySelectorAll('.choices button');
-            buttons.forEach((button, index) => {
-                if (index + 1 === question.correct) {
-                    button.classList.add('white');
-                }
-            });
-        }
-
-        function showResult() {
-            const resultContainer = document.getElementById('result');
-            if (correctAnswers >= 8) {
-                resultContainer.innerHTML = `أحسنت! حصلت على ${correctAnswers} إجابة صحيحة! 😀`;
-            } else {
-                resultContainer.innerHTML = `حاول مرة أخرى! حصلت على ${correctAnswers} إجابة صحيحة! 😢`;
-            }
-        }
-
+function checkAnswer(choice) {
+    const question = questions[currentQuestion];
+    if (choice === question.correct) {
+        correctAnswers++;
+    }
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
         showQuestion();
-    </script>
+    } else {
+        showResult();
+    }
+}
+
+function showCorrectAnswer() {
+    const question = questions[currentQuestion];
+    const buttons = document.querySelectorAll('.choices button');
+    buttons.forEach((button, index) => {
+        if (index + 1 === question.correct) {
+            button.classList.add('white');
+        }
+    });
+}
+
+function showResult() {
+    const resultContainer = document.getElementById('result');
+    if (correctAnswers >= 8) {
+        resultContainer.innerHTML = `أحسنت! حصلت على ${correctAnswers} إجابة صحيحة! 😀`;
+    } else {
+        resultContainer.innerHTML = `حاول مرة أخرى! حصلت على ${correctAnswers} إجابة صحيحة! 😢`;
+    }
+}
+
+showQuestion();
+</script>
 
 </body>
 </html>
