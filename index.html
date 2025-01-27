@@ -3,154 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار ظواهر لغوية</title>
+    <title>أسئلة المستوى السادس</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             direction: rtl;
             text-align: center;
-            background-color: #f2f2f2;
-            margin-top: 50px;
+            background-color: #f3f4f6;
+            color: #333;
         }
         .question {
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #007acc;
+            margin: 20px 0;
         }
-        .answers button {
+        .choices button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 1.2em;
             border: none;
-            padding: 15px;
-            font-size: 18px;
-            margin: 10px;
-            width: 200px;
+            border-radius: 8px;
             cursor: pointer;
-            border-radius: 5px;
         }
-        .red {
-            background-color: #f44336;
-            color: white;
-        }
-        .green {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .yellow {
-            background-color: #ffeb3b;
-            color: black;
-        }
-        .answers button:hover {
-            opacity: 0.8;
-        }
-        .timer {
-            font-size: 20px;
-            margin-top: 20px;
-        }
+        .choices button:nth-child(1) { background-color: #ffcccc; }
+        .choices button:nth-child(2) { background-color: #ccffcc; }
+        .choices button:nth-child(3) { background-color: #cce5ff; }
+        .choices button:hover { opacity: 0.9; }
         .result {
-            font-size: 22px;
-            margin-top: 30px;
-        }
-        .emoji {
-            font-size: 30px;
+            font-size: 1.5em;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="question" id="question"></div>
-    <div class="answers">
-        <button class="answer red" onclick="checkAnswer(0)">اختيار 1</button>
-        <button class="answer green" onclick="checkAnswer(1)">اختيار 2</button>
-        <button class="answer yellow" onclick="checkAnswer(2)">اختيار 3</button>
+    <h1>اختبار المستوى السادس</h1>
+    <div id="quiz-container">
+        <div id="question-container">
+            <p class="question" id="question">...</p>
+            <div class="choices" id="choices">
+                <!-- الأزرار ستتم إضافتها ديناميكيًا -->
+            </div>
+        </div>
+        <div class="result" id="result"></div>
+        <button id="next-question" style="display:none; margin-top: 20px;">السؤال التالي</button>
     </div>
-
-    <div class="timer">الوقت المتبقي: <span id="time">10</span> ثواني</div>
-    <div class="result"></div>
-
     <script>
-        let correctAnswers = 0;
-        let incorrectAnswers = 0;
-        let currentQuestionIndex = 0;
-        let timer = 10;
-        let timerInterval;
-        
         const questions = [
-            { question: "ما هو جمع كلمة 'كتاب'؟", answers: ["كتب", "كتابات", "كتاباتين"], correctAnswer: 0 },
-            { question: "ما هو مرادف كلمة 'جميل'؟", answers: ["وسيم", "قبيح", "قوي"], correctAnswer: 0 },
-            { question: "ما هو ضد كلمة 'سهل'؟", answers: ["صعب", "خالي", "مستقيم"], correctAnswer: 0 },
-            { question: "ما هو جمع كلمة 'شجرة'؟", answers: ["أشجار", "شجيرات", "أشجارين"], correctAnswer: 0 },
-            { question: "ما هو مرادف كلمة 'سعيد'؟", answers: ["مبتهج", "حزين", "غاضب"], correctAnswer: 0 },
-            { question: "ما هو ضد كلمة 'طويل'؟", answers: ["قصير", "عالي", "جديد"], correctAnswer: 0 },
-            { question: "ما هو جمع كلمة 'قلم'؟", answers: ["أقلام", "قلمات", "قلمين"], correctAnswer: 0 },
-            { question: "ما هو مرادف كلمة 'قوي'؟", answers: ["شديد", "ضعيف", "معتدل"], correctAnswer: 0 },
-            { question: "ما هو ضد كلمة 'بارد'؟", answers: ["ساخن", "دافئ", "لطيف"], correctAnswer: 0 },
-            { question: "ما هو جمع كلمة 'طفل'؟", answers: ["أطفال", "طفول", "أطفلين"], correctAnswer: 0 }
+            {
+                question: "ما هو الإعراب الصحيح لكلمة (الطالب) في جملة: (كرّم المعلم الطالب)؟",
+                choices: [
+                    "مرفوع وعلامة رفعه الضمة",
+                    "منصوب وعلامة نصبه الفتحة",
+                    "مجرور وعلامة جره الكسرة"
+                ],
+                correct: 1
+            },
+            {
+                question: "ما هو ضد كلمة (شجاع)؟",
+                choices: [
+                    "قوي",
+                    "جبان",
+                    "ذكي"
+                ],
+                correct: 1
+            },
+            {
+                question: "من أركان الإيمان؟",
+                choices: [
+                    "الصلاة والزكاة",
+                    "الإيمان بالرسل",
+                    "الصوم والحج"
+                ],
+                correct: 1
+            }
         ];
 
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                if (timer > 0) {
-                    timer--;
-                    document.getElementById('time').innerText = timer;
-                } else {
-                    clearInterval(timerInterval);
-                    showResult();
-                }
-            }, 1000);
-        }
+        let currentQuestionIndex = 0;
+        let score = 0;
 
-        function checkAnswer(answer) {
-            clearInterval(timerInterval);
-            if (answer === questions[currentQuestionIndex].correctAnswer) {
-                correctAnswers++;
-                document.querySelector('.result').innerHTML = `<div class="emoji">😄</div> الجواب صحيح!`;
-            } else {
-                incorrectAnswers++;
-                document.querySelector('.result').innerHTML = `<div class="emoji">😞</div> الجواب خاطئ!`;
-            }
-            document.querySelectorAll('.answer').forEach(button => button.disabled = true);
-            setTimeout(() => {
-                currentQuestionIndex++;
-                if (currentQuestionIndex < questions.length) {
-                    loadNextQuestion();
-                } else {
-                    showFinalResults();
-                }
-            }, 2000);
-        }
+        const questionElement = document.getElementById('question');
+        const choicesElement = document.getElementById('choices');
+        const resultElement = document.getElementById('result');
+        const nextButton = document.getElementById('next-question');
 
-        function loadNextQuestion() {
-            document.querySelector('.result').innerHTML = '';
-            document.querySelectorAll('.answer').forEach(button => {
-                button.disabled = false;
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionElement.textContent = currentQuestion.question;
+            choicesElement.innerHTML = '';
+            resultElement.textContent = '';
+
+            currentQuestion.choices.forEach((choice, index) => {
+                const button = document.createElement('button');
+                button.textContent = choice;
+                button.addEventListener('click', () => checkAnswer(index));
+                choicesElement.appendChild(button);
             });
-            timer = 10;
-            startTimer();
-            document.getElementById('question').innerText = questions[currentQuestionIndex].question;
-            const answerButtons = document.querySelectorAll('.answers button');
-            for (let i = 0; i < answerButtons.length; i++) {
-                answerButtons[i].innerText = questions[currentQuestionIndex].answers[i];
+        }
+
+        function checkAnswer(selectedIndex) {
+            const correctIndex = questions[currentQuestionIndex].correct;
+            if (selectedIndex === correctIndex) {
+                resultElement.textContent = 'إجابة صحيحة! 😊';
+                score++;
+            } else {
+                resultElement.textContent = 'إجابة خاطئة! 😢';
             }
+            nextButton.style.display = 'block';
         }
 
-        function showResult() {
-            document.querySelector('.result').innerHTML = `
-                <div class="emoji">⏱️</div>
-                انتهى الوقت!
-                <div class="result">الجواب الصحيح هو: ${questions[currentQuestionIndex].answers[questions[currentQuestionIndex].correctAnswer]}</div>
-            `;
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+                nextButton.style.display = 'none';
+            } else {
+                showFinalScore();
+            }
+        });
+
+        function showFinalScore() {
+            questionElement.textContent = '';
+            choicesElement.innerHTML = '';
+            resultElement.textContent = `لقد أكملت الاختبار! نتيجتك: ${score} من ${questions.length}`;
+            nextButton.style.display = 'none';
         }
 
-        function showFinalResults() {
-            document.querySelector('.result').innerHTML = `
-                <div class="emoji">🏁</div>
-                انتهى الاختبار!<br>
-                الإجابات الصحيحة: ${correctAnswers}<br>
-                الإجابات الخاطئة: ${incorrectAnswers}
-            `;
-        }
-
-        loadNextQuestion();
+        loadQuestion();
     </script>
 </body>
 </html>
+
 
 
 
