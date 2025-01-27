@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,151 +7,181 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            direction: rtl;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        #quiz-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
             text-align: center;
-            background-color: #f3f4f6;
             color: #333;
         }
         .question {
-            font-size: 1.5em;
-            color: #007acc;
-            margin: 20px 0;
+            color: #007BFF;
+            font-weight: bold;
+        }
+        .choices {
+            list-style-type: none;
+            padding: 0;
+        }
+        .choices li {
+            margin: 10px 0;
         }
         .choices button {
-            display: block;
-            margin: 10px auto;
-            padding: 10px 20px;
-            font-size: 1.2em;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
         }
-        .choices button:nth-child(1) { background-color: #ffcccc; }
-        .choices button:nth-child(2) { background-color: #ccffcc; }
-        .choices button:nth-child(3) { background-color: #cce5ff; }
-        .choices button:hover { opacity: 0.9; }
-        .result {
-            font-size: 1.5em;
+        .choices button:nth-child(1) {
+            background-color: #FF4C4C;
+            color: white;
+        }
+        .choices button:nth-child(2) {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .choices button:nth-child(3) {
+            background-color: #007BFF;
+            color: white;
+        }
+        #navigation {
+            display: flex;
+            justify-content: space-between;
             margin-top: 20px;
         }
-        .navigation-buttons button {
-            margin: 10px;
+        #navigation button {
             padding: 10px 20px;
-            font-size: 1.2em;
+            font-size: 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
         }
-        .navigation-buttons .next { background-color: #4CAF50; color: white; }
-        .navigation-buttons .previous { background-color: #f44336; color: white; }
+        #navigation button:nth-child(1) {
+            background-color: #FFA500;
+            color: white;
+        }
+        #navigation button:nth-child(2) {
+            background-color: #6A5ACD;
+            color: white;
+        }
+        #result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
-    <h1>اختبار المستوى السادس</h1>
     <div id="quiz-container">
-        <div id="question-container">
-            <p class="question" id="question">...</p>
-            <div class="choices" id="choices">
-                <!-- الأزرار ستتم إضافتها ديناميكيًا -->
-            </div>
+        <h1>اختبار المستوى السادس</h1>
+        <p id="question" class="question"></p>
+        <ul class="choices">
+            <li><button onclick="checkAnswer(0)"></button></li>
+            <li><button onclick="checkAnswer(1)"></button></li>
+            <li><button onclick="checkAnswer(2)"></button></li>
+        </ul>
+        <div id="navigation">
+            <button onclick="previousQuestion()">السؤال السابق</button>
+            <button onclick="nextQuestion()">السؤال التالي</button>
         </div>
-        <div class="navigation-buttons">
-            <button class="previous" id="previous-question" style="display:none;">السؤال السابق</button>
-            <button class="next" id="next-question" style="display:none;">السؤال التالي</button>
-        </div>
-        <div class="result" id="result"></div>
+        <div id="result"></div>
     </div>
+
+    <audio id="correct-sound" src="correct.wav"></audio>
+    <audio id="wrong-sound" src="wrong.wav"></audio>
+
     <script>
         const questions = [
-            { question: "ما هو الإعراب الصحيح لكلمة (الطالب) في جملة: (كرّم المعلم الطالب)؟", choices: ["مرفوع وعلامة رفعه الضمة", "منصوب وعلامة نصبه الفتحة", "مجرور وعلامة جره الكسرة"], correct: 1 },
-            { question: "ما هو ضد كلمة (شجاع)؟", choices: ["قوي", "جبان", "ذكي"], correct: 1 },
-            { question: "من أركان الإيمان؟", choices: ["الصلاة والزكاة", "الإيمان بالرسل", "الصوم والحج"], correct: 1 },
-            { question: "ما جمع كلمة (كتاب)؟", choices: ["كتب", "كتابين", "كتابة"], correct: 0 },
-            { question: "كم عدد آيات سورة الفاتحة؟", choices: ["5", "6", "7"], correct: 2 },
-            { question: "ما هو مرادف كلمة (سريع)؟", choices: ["بطيء", "خفيف", "قوي"], correct: 1 },
-            { question: "ما هو عكس كلمة (كريم)؟", choices: ["بخيل", "لطيف", "سخي"], correct: 0 },
-            { question: "ما هو نوع الكلمة (يلعب)؟", choices: ["اسم", "فعل", "حرف"], correct: 1 },
-            { question: "ما هو تعريف الصوم؟", choices: ["الصلاة على وقتها", "الإمساك عن المفطرات", "إخراج الزكاة"], correct: 1 },
-            { question: "كم عدد أركان الإسلام؟", choices: ["5", "6", "7"], correct: 0 },
-            { question: "ما هو ترتيب سورة البقرة في القرآن؟", choices: ["2", "3", "4"], correct: 0 },
-            { question: "ما هو مرادف كلمة (جميل)؟", choices: ["قبيح", "وسيم", "بطيء"], correct: 1 },
-            { question: "ما هو ضد كلمة (ضعيف)؟", choices: ["قوي", "سريع", "لطيف"], correct: 0 },
-            { question: "ما هو نوع الجملة (الطالب مجتهد)؟", choices: ["جملة اسمية", "جملة فعلية", "جملة شرطية"], correct: 0 },
-            { question: "من هو خاتم الأنبياء؟", choices: ["عيسى عليه السلام", "محمد صلى الله عليه وسلم", "موسى عليه السلام"], correct: 1 },
-            { question: "ما هو معنى (الصدق)؟", choices: ["قول الحقيقة", "الكذب", "الإفراط"], correct: 0 },
-            { question: "كم عدد ركعات صلاة الفجر؟", choices: ["2", "3", "4"], correct: 0 },
-            { question: "ما هو مرادف كلمة (سعيد)؟", choices: ["حزين", "مسرور", "غاضب"], correct: 1 },
-            { question: "ما هو عكس كلمة (سهل)؟", choices: ["صعب", "خفيف", "سريع"], correct: 0 },
-            { question: "ما هو ترتيب الحج في أركان الإسلام؟", choices: ["الأول", "الثاني", "الخامس"], correct: 2 }
+            {
+                question: "ما هو فعل الأمر من الفعل \"كتب\"؟",
+                choices: ["اكتب", "يكتب", "كتابة"],
+                correctAnswer: 0
+            },
+            {
+                question: "أكمل الآية: \"إن الله مع...\"",
+                choices: ["الظالمين", "المتقين", "المفسدين"],
+                correctAnswer: 1
+            },
+            // أضف المزيد من الأسئلة هنا
         ];
 
-        let currentQuestionIndex = 0;
-        let score = 0;
+        let currentQuestion = 0;
+        let correctAnswers = 0;
         let wrongAnswers = 0;
 
-        const questionElement = document.getElementById('question');
-        const choicesElement = document.getElementById('choices');
-        const resultElement = document.getElementById('result');
-        const nextButton = document.getElementById('next-question');
-        const previousButton = document.getElementById('previous-question');
-
         function loadQuestion() {
-            const currentQuestion = questions[currentQuestionIndex];
-            questionElement.textContent = currentQuestion.question;
-            choicesElement.innerHTML = '';
-            resultElement.textContent = '';
+            const questionElement = document.getElementById("question");
+            const choicesButtons = document.querySelectorAll(".choices button");
 
-            currentQuestion.choices.forEach((choice, index) => {
-                const button = document.createElement('button');
-                button.textContent = choice;
-                button.addEventListener('click', () => checkAnswer(index));
-                choicesElement.appendChild(button);
+            questionElement.textContent = questions[currentQuestion].question;
+            choicesButtons.forEach((button, index) => {
+                button.textContent = questions[currentQuestion].choices[index];
             });
-
-            previousButton.style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
-            nextButton.style.display = 'none';
         }
 
         function checkAnswer(selectedIndex) {
-            const correctIndex = questions[currentQuestionIndex].correct;
-            if (selectedIndex === correctIndex) {
-                resultElement.textContent = 'إجابة صحيحة! 😊';
-                score++;
+            const correctSound = document.getElementById("correct-sound");
+            const wrongSound = document.getElementById("wrong-sound");
+            const resultElement = document.getElementById("result");
+
+            if (selectedIndex === questions[currentQuestion].correctAnswer) {
+                correctAnswers++;
+                correctSound.play();
+                resultElement.textContent = "✅ إجابة صحيحة!";
             } else {
-                resultElement.textContent = 'إجابة خاطئة! 😢';
                 wrongAnswers++;
+                wrongSound.play();
+                resultElement.textContent = "❌ إجابة خاطئة!";
             }
-            nextButton.style.display = 'inline-block';
         }
 
-        nextButton.addEventListener('click', () => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
                 loadQuestion();
+                document.getElementById("result").textContent = "";
             } else {
                 showFinalScore();
             }
-        });
+        }
 
-        previousButton.addEventListener('click', () => {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
                 loadQuestion();
+                document.getElementById("result").textContent = "";
             }
-        });
+        }
 
         function showFinalScore() {
-            questionElement.textContent = '';
-            choicesElement.innerHTML = '';
-            resultElement.innerHTML = `لقد أكملت الاختبار!<br>إجابات صحيحة: ${score}<br>إجابات خاطئة: ${wrongAnswers}<br><br>شكرًا على مشاركتك! 🙌<br><strong>تحيات رحمون</strong>`;
-            nextButton.style.display = 'none';
-            previousButton.style.display = 'none';
+            const quizContainer = document.getElementById("quiz-container");
+            quizContainer.innerHTML = `
+                <h1>لقد أكملت الاختبار!</h1>
+                <p>إجاباتك الصحيحة: ${correctAnswers}</p>
+                <p>إجاباتك الخاطئة: ${wrongAnswers}</p>
+                <p>شكرًا لمشاركتك، رحمون! 🎉</p>
+            `;
         }
 
         loadQuestion();
     </script>
 </body>
 </html>
+
 
 
 
