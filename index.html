@@ -34,6 +34,9 @@
             cursor: pointer;
             padding: 10px;
             border-radius: 8px;
+            display: inline-block;
+            width: 80%;
+            text-align: center;
         }
         .red { background-color: red; color: white; }
         .yellow { background-color: yellow; }
@@ -150,7 +153,6 @@
                 answer: "أ) نيل آرمسترونغ",
                 color: { red: 'red', yellow: 'yellow', green: 'green' }
             },
-            // أسئلة بدون خيارات
             {
                 question: "أكتب عاصمة دولة اليابان:",
                 answer: "طوكيو",
@@ -200,16 +202,13 @@
                 questionContainer.innerHTML = `
                     <div class="question">${question.question}</div>
                     <div class="options">
-                        <div class="option ${question.color.red}">
-                            <input type="radio" name="option" value="${question.options[0]}">
+                        <div class="option ${question.color.red}" onclick="selectOption('${question.options[0]}')">
                             <label>${question.options[0]}</label>
                         </div>
-                        <div class="option ${question.color.yellow}">
-                            <input type="radio" name="option" value="${question.options[1]}">
+                        <div class="option ${question.color.yellow}" onclick="selectOption('${question.options[1]}')">
                             <label>${question.options[1]}</label>
                         </div>
-                        <div class="option ${question.color.green}">
-                            <input type="radio" name="option" value="${question.options[2]}">
+                        <div class="option ${question.color.green}" onclick="selectOption('${question.options[2]}')">
                             <label>${question.options[2]}</label>
                         </div>
                     </div>
@@ -235,22 +234,7 @@
             }, 1000);
         }
 
-        function nextQuestion() {
-            const selectedOption = document.querySelector('input[name="option"]:checked');
-            const inputAnswer = document.getElementById("answer-input");
-
-            if (!selectedOption && !inputAnswer) {
-                alert('من فضلك اختر أو اكتب إجابة');
-                return;
-            }
-
-            let answer = '';
-            if (selectedOption) {
-                answer = selectedOption.value;
-            } else if (inputAnswer) {
-                answer = inputAnswer.value;
-            }
-
+        function selectOption(answer) {
             const correctAnswer = questions[currentQuestionIndex].answer;
             const isCorrect = answer === correctAnswer;
 
@@ -262,13 +246,7 @@
             }
 
             showResult(isCorrect, answer);
-
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                loadQuestion();
-            } else {
-                showFinalResult();
-            }
+            document.getElementById("next-button").disabled = false;
         }
 
         function playSound(result) {
@@ -285,6 +263,15 @@
             `;
         }
 
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showFinalResult();
+            }
+        }
+
         function showFinalResult() {
             const resultContainer = document.getElementById("result");
             resultContainer.innerHTML = `
@@ -299,14 +286,6 @@
             thankYouMessage.style.display = 'block';
         }
 
-        function restartQuiz() {
-            currentQuestionIndex = 0;
-            score = 0;
-            document.getElementById("quiz-container").style.display = 'block';
-            document.getElementById("result").innerHTML = '';
-            loadQuestion();
-        }
-
         function updateButtons() {
             document.getElementById("previous-button").disabled = currentQuestionIndex === 0;
             document.getElementById("next-button").disabled = false;
@@ -319,11 +298,20 @@
             }
         }
 
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById("quiz-container").style.display = 'block';
+            document.getElementById("result").innerHTML = '';
+            loadQuestion();
+        }
+
         loadQuestion();
     </script>
 
 </body>
 </html>
+
 
 
 
