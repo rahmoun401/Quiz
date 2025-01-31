@@ -1,136 +1,51 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مسابقة التحدي</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
-        .container { width: 50%; margin: auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 0px 10px gray; }
-        .question { font-size: 20px; margin-bottom: 10px; }
-        .options button { display: block; width: 100%; padding: 10px; margin: 5px; border-radius: 5px; font-size: 18px; }
-        .red { background-color: red; color: white; }
-        .yellow { background-color: yellow; }
-        .green { background-color: green; color: white; }
-        .hidden { display: none; }
-        .timer { font-size: 18px; color: red; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>مسابقة التحدي</h1>
-        <div id="quiz">
-            <p class="timer">الوقت المتبقي: <span id="timer">15</span> ثانية</p>
-            <p class="question" id="question"></p>
-            <div class="options" id="options"></div>
-            <input type="text" id="textAnswer" class="hidden" placeholder="اكتب إجابتك هنا">
-            <button id="checkAnswer" class="hidden">تحقق من الإجابة</button>
-        </div>
-        <button id="prev" class="hidden">السؤال السابق</button>
-        <button id="next" class="hidden">السؤال التالي</button>
-        <p id="result" class="hidden"></p>
-    </div>
-    <audio id="correctSound" src="correct.mp3"></audio>
-    <audio id="wrongSound" src="wrong.mp3"></audio>
-    <script>
-        const questions = [
-            { question: "ما هي عاصمة المغرب؟", options: ["الرباط", "الدار البيضاء", "مراكش"], answer: 0 },
-            { question: "ما هو أكبر كوكب في المجموعة الشمسية؟", options: ["المريخ", "المشتري", "الأرض"], answer: 1 },
-            { question: "كم عدد حروف اللغة العربية؟", options: ["26", "28", "30"], answer: 1 },
-        ];
-        const extraQuestions = [
-            { question: "من هو مؤسس علم الجبر؟", answer: "الخوارزمي" },
-            { question: "في أي عام حصل المغرب على الاستقلال؟", answer: "1956" }
-        ];
+import random
 
-        let currentQuestion = 0;
-        let score = 0;
-        let timer;
-        
-        function loadQuestion() {
-            clearInterval(timer);
-            document.getElementById("timer").innerText = "15";
-            startTimer(15);
-            const q = questions[currentQuestion];
-            document.getElementById("question").innerText = q.question;
-            let optionsHtml = "";
-            q.options.forEach((opt, index) => {
-                const colorClass = index === 0 ? 'red' : index === 1 ? 'yellow' : 'green';
-                optionsHtml += `<button class="${colorClass}" onclick="checkAnswer(${index})">${opt}</button>`;
-            });
-            document.getElementById("options").innerHTML = optionsHtml;
-            document.getElementById("textAnswer").classList.add("hidden");
-            document.getElementById("checkAnswer").classList.add("hidden");
-        }
+# الأسئلة والإجابات
+questions = [
+    {"question": "ما هو الغاز الذي يشكل حوالي 78% من الهواء؟", "options": ["أ) الأوكسجين", "ب) النيتروجين", "ج) الأرجون"], "answer": "ب) النيتروجين"},
+    {"question": "من كان أول رئيس للولايات المتحدة الأمريكية؟", "options": ["أ) جورج واشنطن", "ب) توماس جيفرسون", "ج) أبرهام لنكولن"], "answer": "أ) جورج واشنطن"},
+    {"question": "في أي عام أقيمت أولمبياد لندن الصيفية؟", "options": ["أ) 2004", "ب) 2012", "ج) 1996"], "answer": "ب) 2012"},
+    {"question": "من هو مؤلف رواية 'الأبله'؟", "options": ["أ) ليو تولستوي", "ب) فيودور دوستويفسكي", "ج) تشارلز ديكنز"], "answer": "ب) فيودور دوستويفسكي"},
+    {"question": "من هو عالم الفيزياء الذي وضع نظرية النسبية؟", "options": ["أ) إسحاق نيوتن", "ب) ألبرت أينشتاين", "ج) نيكولا تسلا"], "answer": "ب) ألبرت أينشتاين"},
+    {"question": "أين أقيمت أول دورة ألعاب أولمبية؟", "options": ["أ) روما", "ب) أثينا", "ج) لندن"], "answer": "ب) أثينا"},
+    {"question": "ما هو أكبر كوكب في النظام الشمسي؟", "options": ["أ) زحل", "ب) المشتري", "ج) المريخ"], "answer": "ب) المشتري"},
+    {"question": "من هو الفنان الذي رسم لوحة 'الموناليزا'؟", "options": ["أ) مايكل أنجلو", "ب) ليوناردو دا فينشي", "ج) بابلو بيكاسو"], "answer": "ب) ليوناردو دا فينشي"},
+    {"question": "ما هو أطول نهر في العالم؟", "options": ["أ) النيل", "ب) الأمازون", "ج) اليانغتسي"], "answer": "أ) النيل"},
+    {"question": "في أي عام بدأت الحرب العالمية الثانية؟", "options": ["أ) 1914", "ب) 1939", "ج) 1945"], "answer": "ب) 1939"},
+    {"question": "من هو أول إنسان زرع قدمه على سطح القمر؟", "options": ["أ) يوري غاغارين", "ب) نيل آرمسترونغ", "ج) باز ألدرين"], "answer": "ب) نيل آرمسترونغ"},
+    {"question": "ما هو العنصر الكيميائي الذي يرمز له بـ 'O'؟", "options": ["أ) الأوكسجين", "ب) الأوزميوم", "ج) الذهب"], "answer": "أ) الأوكسجين"},
+    {"question": "ما هو الحيوان الذي يعتبر أسرع حيوان بري؟", "options": ["أ) الأسد", "ب) الفهد", "ج) الجمل"], "answer": "ب) الفهد"},
+    {"question": "من هو الشاعر الذي كتب 'الإلياذة'؟", "options": ["أ) هوميروس", "ب) شكسبير", "ج) أحمد شوقي"], "answer": "أ) هوميروس"},
+    {"question": "في أي دولة يقع أكبر جبل في العالم، جبل إيفرست؟", "options": ["أ) نيبال", "ب) الصين", "ج) الهند"], "answer": "أ) نيبال"},
+    {"question": "ما هو الحيوان الذي يطلق عليه اسم 'سفينة الصحراء'؟", "options": ["أ) الجمل", "ب) الحصان", "ج) البعير"], "answer": "أ) الجمل"},
+]
 
-        function checkAnswer(selected) {
-            if (selected === questions[currentQuestion].answer) {
-                score++;
-                document.getElementById("correctSound").play();
-            } else {
-                document.getElementById("wrongSound").play();
-            }
-            nextQuestion();
-        }
+# دالة لعرض السؤال والتحقق من الإجابة
+def ask_question(question):
+    print(question["question"])
+    for option in question["options"]:
+        print(option)
+    answer = input("اختر الإجابة الصحيحة: ")
+    return answer == question["answer"]
 
-        function startTimer(seconds) {
-            let timeLeft = seconds;
-            timer = setInterval(() => {
-                timeLeft--;
-                document.getElementById("timer").innerText = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    nextQuestion();
-                }
-            }, 1000);
-        }
+# دالة لبدء المسابقة
+def start_quiz():
+    random.shuffle(questions)  # خلط الأسئلة بشكل عشوائي
+    score = 0
+    for i, question in enumerate(questions[:15], start=1):
+        print(f"\nسؤال {i}:")
+        if ask_question(question):
+            print("إجابة صحيحة!")
+            score += 1
+        else:
+            print("إجابة خاطئة.")
+    print(f"\nتمت المسابقة! حصلت على {score} من 15.")
 
-        function nextQuestion() {
-            currentQuestion++;
-            if (currentQuestion < questions.length) {
-                loadQuestion();
-            } else {
-                loadExtraQuestions();
-            }
-        }
+# بدء المسابقة
+if __name__ == "__main__":
+    print("أهلاً بك في مسابقة تحدي المعرفة الكبرى!")
+    start_quiz()
 
-        function loadExtraQuestions() {
-            clearInterval(timer);
-            document.getElementById("timer").innerText = "20";
-            startTimer(20);
-            document.getElementById("options").innerHTML = "";
-            document.getElementById("textAnswer").classList.remove("hidden");
-            document.getElementById("checkAnswer").classList.remove("hidden");
-            document.getElementById("checkAnswer").onclick = function () {
-                const userAnswer = document.getElementById("textAnswer").value.trim();
-                if (userAnswer === extraQuestions[currentQuestion - questions.length].answer) {
-                    score += 2;
-                    document.getElementById("correctSound").play();
-                } else {
-                    document.getElementById("wrongSound").play();
-                }
-                nextExtraQuestion();
-            };
-            document.getElementById("question").innerText = extraQuestions[currentQuestion - questions.length].question;
-        }
-
-        function nextExtraQuestion() {
-            currentQuestion++;
-            if (currentQuestion < questions.length + extraQuestions.length) {
-                loadExtraQuestions();
-            } else {
-                showResult();
-            }
-        }
-
-        function showResult() {
-            document.getElementById("quiz").innerHTML = `<h2>نتيجتك: ${score} نقاط</h2>`;
-        }
-
-        loadQuestion();
-    </script>
-</body>
-</html>
 
 
 
