@@ -1,187 +1,88 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مسابقة تحدي المعرفة الكبرى</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            direction: rtl;
-            text-align: center;
-            margin: 20px;
-            padding: 0;
-        }
-        .question-container {
-            margin-bottom: 20px;
-        }
-        .question {
-            font-size: 20px;
-        }
-        .options {
-            margin-top: 10px;
-        }
-        .option {
-            margin: 5px 0;
-        }
-        #result {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-        #next-button {
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
+<script>
+    let timeRemaining = 10;  // الوقت المتبقي بالثواني لكل سؤال
+    let timerInterval;
 
-    <h1>أهلاً بك في مسابقة تحدي المعرفة الكبرى!</h1>
-    <div id="quiz-container">
-        <div id="question-container" class="question-container">
-            <!-- الأسئلة ستظهر هنا -->
-        </div>
-        <button id="next-button" onclick="nextQuestion()">التالي</button>
-    </div>
-
-    <div id="result"></div>
-
-    <script>
-        // الأسئلة والإجابات
-        const questions = [
-            {
-                question: "ما هو الغاز الذي يشكل حوالي 78% من الهواء؟",
-                options: ["أ) الأوكسجين", "ب) النيتروجين", "ج) الأرجون"],
-                answer: "ب) النيتروجين"
-            },
-            {
-                question: "من كان أول رئيس للولايات المتحدة الأمريكية؟",
-                options: ["أ) جورج واشنطن", "ب) توماس جيفرسون", "ج) أبرهام لنكولن"],
-                answer: "أ) جورج واشنطن"
-            },
-            {
-                question: "في أي عام أقيمت أولمبياد لندن الصيفية؟",
-                options: ["أ) 2004", "ب) 2012", "ج) 1996"],
-                answer: "ب) 2012"
-            },
-            {
-                question: "من هو مؤلف رواية 'الأبله'؟",
-                options: ["أ) ليو تولستوي", "ب) فيودور دوستويفسكي", "ج) تشارلز ديكنز"],
-                answer: "ب) فيودور دوستويفسكي"
-            },
-            {
-                question: "من هو عالم الفيزياء الذي وضع نظرية النسبية؟",
-                options: ["أ) إسحاق نيوتن", "ب) ألبرت أينشتاين", "ج) نيكولا تسلا"],
-                answer: "ب) ألبرت أينشتاين"
-            },
-            {
-                question: "أين أقيمت أول دورة ألعاب أولمبية؟",
-                options: ["أ) روما", "ب) أثينا", "ج) لندن"],
-                answer: "ب) أثينا"
-            },
-            {
-                question: "ما هو أكبر كوكب في النظام الشمسي؟",
-                options: ["أ) زحل", "ب) المشتري", "ج) المريخ"],
-                answer: "ب) المشتري"
-            },
-            {
-                question: "من هو الفنان الذي رسم لوحة 'الموناليزا'؟",
-                options: ["أ) مايكل أنجلو", "ب) ليوناردو دا فينشي", "ج) بابلو بيكاسو"],
-                answer: "ب) ليوناردو دا فينشي"
-            },
-            {
-                question: "ما هو أطول نهر في العالم؟",
-                options: ["أ) النيل", "ب) الأمازون", "ج) اليانغتسي"],
-                answer: "أ) النيل"
-            },
-            {
-                question: "في أي عام بدأت الحرب العالمية الثانية؟",
-                options: ["أ) 1914", "ب) 1939", "ج) 1945"],
-                answer: "ب) 1939"
-            },
-            {
-                question: "من هو أول إنسان زرع قدمه على سطح القمر؟",
-                options: ["أ) يوري غاغارين", "ب) نيل آرمسترونغ", "ج) باز ألدرين"],
-                answer: "ب) نيل آرمسترونغ"
-            },
-            {
-                question: "ما هو العنصر الكيميائي الذي يرمز له بـ 'O'؟",
-                options: ["أ) الأوكسجين", "ب) الأوزميوم", "ج) الذهب"],
-                answer: "أ) الأوكسجين"
-            },
-            {
-                question: "ما هو الحيوان الذي يعتبر أسرع حيوان بري؟",
-                options: ["أ) الأسد", "ب) الفهد", "ج) الجمل"],
-                answer: "ب) الفهد"
-            },
-            {
-                question: "من هو الشاعر الذي كتب 'الإلياذة'؟",
-                options: ["أ) هوميروس", "ب) شكسبير", "ج) أحمد شوقي"],
-                answer: "أ) هوميروس"
-            },
-            {
-                question: "في أي دولة يقع أكبر جبل في العالم، جبل إيفرست؟",
-                options: ["أ) نيبال", "ب) الصين", "ج) الهند"],
-                answer: "أ) نيبال"
-            },
-            {
-                question: "ما هو الحيوان الذي يطلق عليه اسم 'سفينة الصحراء'؟",
-                options: ["أ) الجمل", "ب) الحصان", "ج) البعير"],
-                answer: "أ) الجمل"
-            }
-        ];
-
-        let currentQuestionIndex = 0;
-        let score = 0;
-
-        function loadQuestion() {
-            const question = questions[currentQuestionIndex];
-            const questionContainer = document.getElementById("question-container");
-            questionContainer.innerHTML = `
-                <div class="question">${question.question}</div>
-                <div class="options">
-                    ${question.options.map(option => `
-                        <div class="option">
-                            <input type="radio" name="option" value="${option}">
-                            <label>${option}</label>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function nextQuestion() {
-            const selectedOption = document.querySelector('input[name="option"]:checked');
-            if (!selectedOption) {
-                alert('من فضلك اختر إجابة');
-                return;
-            }
-
-            const answer = selectedOption.value;
-            if (answer === questions[currentQuestionIndex].answer) {
-                score++;
-            }
-
-            currentQuestionIndex++;
-
-            if (currentQuestionIndex < questions.length) {
-                loadQuestion();
+    function startTimer() {
+        timerInterval = setInterval(function() {
+            document.getElementById("timer").innerText = `الوقت المتبقي: ${timeRemaining} ثانية`;
+            if (timeRemaining <= 0) {
+                clearInterval(timerInterval);
+                nextQuestion();  // الانتقال للسؤال التالي عندما ينتهي الوقت
             } else {
-                showResult();
+                timeRemaining--;
             }
-        }
+        }, 1000);
+    }
 
-        function showResult() {
-            document.getElementById("quiz-container").style.display = 'none';
-            document.getElementById("result").innerHTML = `تمت المسابقة! حصلت على ${score} من ${questions.length} إجابة صحيحة.`;
-        }
+    function resetTimer() {
+        timeRemaining = 10;
+        clearInterval(timerInterval);
+        startTimer();
+    }
 
-        // بداية المسابقة
-        loadQuestion();
-    </script>
+    function loadQuestion() {
+        const question = questions[currentQuestionIndex];
+        const questionContainer = document.getElementById("question-container");
+        questionContainer.innerHTML = `
+            <div class="question">${question.question}</div>
+            <div class="options">
+                ${question.options.map(option => `
+                    <div class="option">
+                        <input type="radio" name="option" value="${option}">
+                        <label>${option}</label>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        resetTimer();
+    }
+</script>
+function showResult() {
+    let resultHTML = `تمت المسابقة! حصلت على ${score} من ${questions.length} إجابة صحيحة. <br><br><strong>تفاصيل الإجابات:</strong><br>`;
 
-</body>
-</html>
+    questions.forEach((question, index) => {
+        const selectedOption = document.querySelector(`input[name="option"]:checked`);
+        const userAnswer = selectedOption ? selectedOption.value : "لم يتم اختيار إجابة";
+        const correctAnswer = question.answer;
+
+        resultHTML += `
+            <div>
+                <strong>السؤال ${index + 1}: </strong> ${question.question}<br>
+                <strong>إجابتك: </strong> ${userAnswer}<br>
+                <strong>الإجابة الصحيحة: </strong> ${correctAnswer}<br><br>
+            </div>
+        `;
+    });
+
+    document.getElementById("result").innerHTML = resultHTML;
+}
+.option {
+    transition: background-color 0.3s ease;
+}
+
+.option input:checked + label {
+    background-color: lightgreen;
+}
+
+.option input:not(:checked):hover + label {
+    background-color: lightgray;
+}
+function showResult() {
+    document.getElementById("quiz-container").style.display = 'none';
+    document.getElementById("result").innerHTML = `
+        تمت المسابقة! حصلت على ${score} من ${questions.length} إجابة صحيحة. 
+        <br><br><button onclick="restartQuiz()">إعادة المحاولة</button>
+    `;
+}
+
+function restartQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    document.getElementById("quiz-container").style.display = 'block';
+    document.getElementById("result").innerHTML = '';
+    loadQuestion();
+}
+
 
 
 
