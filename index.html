@@ -1,187 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <titleabderrahimelbazس</title>
+    <title>مسابقة التحدي</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f9;
-        }
-        #quiz-container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            max-width: 600px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .question {
-            color: #007BFF;
-            font-weight: bold;
-        }
-        .choices {
-            list-style-type: none;
-            padding: 0;
-        }
-        .choices li {
-            margin: 10px 0;
-        }
-        .choices button {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .choices button:nth-child(1) {
-            background-color: #FF4C4C;
-            color: white;
-        }
-        .choices button:nth-child(2) {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .choices button:nth-child(3) {
-            background-color: #007BFF;
-            color: white;
-        }
-        #navigation {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        #navigation button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #navigation button:nth-child(1) {
-            background-color: #FFA500;
-            color: white;
-        }
-        #navigation button:nth-child(2) {
-            background-color: #6A5ACD;
-            color: white;
-        }
-        #result {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 18px;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        .container { width: 50%; margin: auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 0px 10px gray; }
+        .question { font-size: 20px; margin-bottom: 10px; }
+        .options button { display: block; width: 100%; padding: 10px; margin: 5px; border-radius: 5px; font-size: 18px; }
+        .red { background-color: red; color: white; }
+        .yellow { background-color: yellow; }
+        .green { background-color: green; color: white; }
+        .hidden { display: none; }
+        .timer { font-size: 18px; color: red; }
     </style>
 </head>
 <body>
-    <div id="quiz-container">
-        <h1>اختبار المستوى السادس</h1>
-        <p id="question" class="question"></p>
-        <ul class="choices">
-            <li><button onclick="checkAnswer(0)"></button></li>
-            <li><button onclick="checkAnswer(1)"></button></li>
-            <li><button onclick="checkAnswer(2)"></button></li>
-        </ul>
-        <div id="navigation">
-            <button onclick="previousQuestion()">السؤال السابق</button>
-            <button onclick="nextQuestion()">السؤال التالي</button>
+    <div class="container">
+        <h1>مسابقة التحدي</h1>
+        <div id="quiz">
+            <p class="timer">الوقت المتبقي: <span id="timer">15</span> ثانية</p>
+            <p class="question" id="question"></p>
+            <div class="options" id="options"></div>
+            <input type="text" id="textAnswer" class="hidden" placeholder="اكتب إجابتك هنا">
+            <button id="checkAnswer" class="hidden">تحقق من الإجابة</button>
         </div>
-        <div id="result"></div>
+        <button id="prev" class="hidden">السؤال السابق</button>
+        <button id="next" class="hidden">السؤال التالي</button>
+        <p id="result" class="hidden"></p>
     </div>
-
-    <audio id="correct-sound" src="correct.wav"></audio>
-    <audio id="wrong-sound" src="wrong.wav"></audio>
-
+    <audio id="correctSound" src="correct.mp3"></audio>
+    <audio id="wrongSound" src="wrong.mp3"></audio>
     <script>
         const questions = [
-            {
-                question: "ما هو فعل الأمر من الفعل \"كتب\"؟",
-                choices: ["اكتب", "يكتب", "كتابة"],
-                correctAnswer: 0
-            },
-            {
-                question: "أكمل الآية: \"إن الله مع...\"",
-                choices: ["الظالمين", "المتقين", "المفسدين"],
-                correctAnswer: 1
-            },
-            // أضف المزيد من الأسئلة هنا
+            { question: "ما هي عاصمة المغرب؟", options: ["الرباط", "الدار البيضاء", "مراكش"], answer: 0 },
+            { question: "ما هو أكبر كوكب في المجموعة الشمسية؟", options: ["المريخ", "المشتري", "الأرض"], answer: 1 },
+            { question: "كم عدد حروف اللغة العربية؟", options: ["26", "28", "30"], answer: 1 },
+        ];
+        const extraQuestions = [
+            { question: "من هو مؤسس علم الجبر؟", answer: "الخوارزمي" },
+            { question: "في أي عام حصل المغرب على الاستقلال؟", answer: "1956" }
         ];
 
         let currentQuestion = 0;
-        let correctAnswers = 0;
-        let wrongAnswers = 0;
-
+        let score = 0;
+        let timer;
+        
         function loadQuestion() {
-            const questionElement = document.getElementById("question");
-            const choicesButtons = document.querySelectorAll(".choices button");
-
-            questionElement.textContent = questions[currentQuestion].question;
-            choicesButtons.forEach((button, index) => {
-                button.textContent = questions[currentQuestion].choices[index];
+            clearInterval(timer);
+            document.getElementById("timer").innerText = "15";
+            startTimer(15);
+            const q = questions[currentQuestion];
+            document.getElementById("question").innerText = q.question;
+            let optionsHtml = "";
+            q.options.forEach((opt, index) => {
+                const colorClass = index === 0 ? 'red' : index === 1 ? 'yellow' : 'green';
+                optionsHtml += `<button class="${colorClass}" onclick="checkAnswer(${index})">${opt}</button>`;
             });
+            document.getElementById("options").innerHTML = optionsHtml;
+            document.getElementById("textAnswer").classList.add("hidden");
+            document.getElementById("checkAnswer").classList.add("hidden");
         }
 
-        function checkAnswer(selectedIndex) {
-            const correctSound = document.getElementById("correct-sound");
-            const wrongSound = document.getElementById("wrong-sound");
-            const resultElement = document.getElementById("result");
-
-            if (selectedIndex === questions[currentQuestion].correctAnswer) {
-                correctAnswers++;
-                correctSound.play();
-                resultElement.textContent = "✅ إجابة صحيحة!";
+        function checkAnswer(selected) {
+            if (selected === questions[currentQuestion].answer) {
+                score++;
+                document.getElementById("correctSound").play();
             } else {
-                wrongAnswers++;
-                wrongSound.play();
-                resultElement.textContent = "❌ إجابة خاطئة!";
+                document.getElementById("wrongSound").play();
             }
+            nextQuestion();
+        }
+
+        function startTimer(seconds) {
+            let timeLeft = seconds;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    nextQuestion();
+                }
+            }, 1000);
         }
 
         function nextQuestion() {
-            if (currentQuestion < questions.length - 1) {
-                currentQuestion++;
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
                 loadQuestion();
-                document.getElementById("result").textContent = "";
             } else {
-                showFinalScore();
+                loadExtraQuestions();
             }
         }
 
-        function previousQuestion() {
-            if (currentQuestion > 0) {
-                currentQuestion--;
-                loadQuestion();
-                document.getElementById("result").textContent = "";
+        function loadExtraQuestions() {
+            clearInterval(timer);
+            document.getElementById("timer").innerText = "20";
+            startTimer(20);
+            document.getElementById("options").innerHTML = "";
+            document.getElementById("textAnswer").classList.remove("hidden");
+            document.getElementById("checkAnswer").classList.remove("hidden");
+            document.getElementById("checkAnswer").onclick = function () {
+                const userAnswer = document.getElementById("textAnswer").value.trim();
+                if (userAnswer === extraQuestions[currentQuestion - questions.length].answer) {
+                    score += 2;
+                    document.getElementById("correctSound").play();
+                } else {
+                    document.getElementById("wrongSound").play();
+                }
+                nextExtraQuestion();
+            };
+            document.getElementById("question").innerText = extraQuestions[currentQuestion - questions.length].question;
+        }
+
+        function nextExtraQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length + extraQuestions.length) {
+                loadExtraQuestions();
+            } else {
+                showResult();
             }
         }
 
-        function showFinalScore() {
-            const quizContainer = document.getElementById("quiz-container");
-            quizContainer.innerHTML = `
-                <h1>لقد أكملت الاختبار!</h1>
-                <p>إجاباتك الصحيحة: ${correctAnswers}</p>
-                <p>إجاباتك الخاطئة: ${wrongAnswers}</p>
-                <p>شكرًا لمشاركتك، رحمون! 🎉</p>
-            `;
+        function showResult() {
+            document.getElementById("quiz").innerHTML = `<h2>نتيجتك: ${score} نقاط</h2>`;
         }
 
         loadQuestion();
     </script>
 </body>
 </html>
-
 
 
 
