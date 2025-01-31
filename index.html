@@ -1,87 +1,309 @@
-<script>
-    let timeRemaining = 10;  // الوقت المتبقي بالثواني لكل سؤال
-    let timerInterval;
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة تحدي المعرفة الكبرى</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: center;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .question-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+        }
+        .question {
+            font-size: 20px;
+        }
+        .options {
+            margin-top: 10px;
+        }
+        .option {
+            margin: 5px 0;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .red { background-color: red; color: white; }
+        .yellow { background-color: yellow; }
+        .green { background-color: green; color: white; }
+        .option:hover {
+            opacity: 0.7;
+        }
+        #timer {
+            font-size: 18px;
+            color: red;
+        }
+        #result {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        #next-button {
+            margin-top: 20px;
+        }
+        #question-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        #previous-button, #next-button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #previous-button:disabled, #next-button:disabled {
+            background-color: #95a5a6;
+        }
+        .input-answer {
+            margin-top: 20px;
+        }
+        .input-answer input {
+            padding: 10px;
+            width: 50%;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
 
-    function startTimer() {
-        timerInterval = setInterval(function() {
-            document.getElementById("timer").innerText = `الوقت المتبقي: ${timeRemaining} ثانية`;
-            if (timeRemaining <= 0) {
-                clearInterval(timerInterval);
-                nextQuestion();  // الانتقال للسؤال التالي عندما ينتهي الوقت
-            } else {
-                timeRemaining--;
+    <h1>أهلاً بك في مسابقة تحدي المعرفة الكبرى!</h1>
+
+    <div id="quiz-container">
+        <div id="question-container" class="question-container">
+            <!-- الأسئلة ستظهر هنا -->
+        </div>
+
+        <div id="question-buttons">
+            <button id="previous-button" onclick="previousQuestion()" disabled>السؤال السابق</button>
+            <button id="next-button" onclick="nextQuestion()">السؤال الموالي</button>
+        </div>
+        <div id="timer"></div>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        const questions = [
+            {
+                question: "ما هي عاصمة المملكة المغربية؟",
+                options: ["أ) الرباط", "ب) الدار البيضاء", "ج) مراكش"],
+                answer: "أ) الرباط",
+                color: { red: 'red', yellow: 'yellow', green: 'green' }
+            },
+            {
+                question: "من هو مؤلف كتاب 'الأيام'؟",
+                options: ["أ) نجيب محفوظ", "ب) طه حسين", "ج) يوسف إدريس"],
+                answer: "ب) طه حسين",
+                color: { red: 'red', yellow: 'yellow', green: 'green' }
+            },
+            {
+                question: "ما هو أطول نهر في العالم؟",
+                options: ["أ) نهر النيل", "ب) نهر الأمازون", "ج) نهر الغانج"],
+                answer: "أ) نهر النيل",
+                color: { red: 'red', yellow: 'yellow', green: 'green' }
+            },
+            {
+                question: "أين تقع مدينة أهرامات الجيزة؟",
+                options: ["أ) مصر", "ب) الجزائر", "ج) تونس"],
+                answer: "أ) مصر",
+                color: { red: 'red', yellow: 'yellow', green: 'green' }
+            },
+            {
+                question: "ما هو الحيوان الذي يطلق عليه اسم 'سفينة الصحراء'؟",
+                options: ["أ) الجمل", "ب) الحصان", "ج) البعير"],
+                answer: "أ) الجمل",
+                color: { red: 'red', yellow: 'yellow', green: 'green' }
+            },
+            {
+                question: "من هو أول إنسان سير على سطح القمر؟",
+                options: ["أ) نيل آرمسترونغ", "ب) يوري غاغارين", "ج) باز ألدرين"],
+                answer: "أ) نيل آرمسترونغ",
+                color: { red: 'red', yellow: 'yellow', green: 'green' }
+            },
+            // أسئلة بدون خيارات
+            {
+                question: "أكتب عاصمة دولة اليابان:",
+                answer: "طوكيو",
+                isInput: true
+            },
+            {
+                question: "أكتب اسم أول رئيس لمصر بعد ثورة 1952:",
+                answer: "جمال عبد الناصر",
+                isInput: true
+            },
+            {
+                question: "أكتب اسم مؤلف كتاب 'في الشعر الجاهلي':",
+                answer: "طه حسين",
+                isInput: true
+            },
+            {
+                question: "أكتب اسم أكبر بحر في العالم:",
+                answer: "البحر الأبيض المتوسط",
+                isInput: true
+            },
+            {
+                question: "أكتب اسم أول امرأة في التاريخ حصلت على جائزة نوبل:",
+                answer: "ماري كوري",
+                isInput: true
             }
-        }, 1000);
-    }
+        ];
 
-    function resetTimer() {
-        timeRemaining = 10;
-        clearInterval(timerInterval);
-        startTimer();
-    }
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+        let timeRemaining = 15;
 
-    function loadQuestion() {
-        const question = questions[currentQuestionIndex];
-        const questionContainer = document.getElementById("question-container");
-        questionContainer.innerHTML = `
-            <div class="question">${question.question}</div>
-            <div class="options">
-                ${question.options.map(option => `
-                    <div class="option">
-                        <input type="radio" name="option" value="${option}">
-                        <label>${option}</label>
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            const questionContainer = document.getElementById("question-container");
+            const isInputQuestion = question.isInput || false;
+
+            if (isInputQuestion) {
+                questionContainer.innerHTML = `
+                    <div class="question">${question.question}</div>
+                    <div class="input-answer">
+                        <input type="text" id="answer-input" placeholder="أكتب إجابتك هنا...">
                     </div>
-                `).join('')}
-            </div>
-        `;
-        resetTimer();
-    }
-</script>
-function showResult() {
-    let resultHTML = `تمت المسابقة! حصلت على ${score} من ${questions.length} إجابة صحيحة. <br><br><strong>تفاصيل الإجابات:</strong><br>`;
+                `;
+                document.getElementById("next-button").disabled = false;
+            } else {
+                questionContainer.innerHTML = `
+                    <div class="question">${question.question}</div>
+                    <div class="options">
+                        <div class="option ${question.color.red}">
+                            <input type="radio" name="option" value="${question.options[0]}">
+                            <label>${question.options[0]}</label>
+                        </div>
+                        <div class="option ${question.color.yellow}">
+                            <input type="radio" name="option" value="${question.options[1]}">
+                            <label>${question.options[1]}</label>
+                        </div>
+                        <div class="option ${question.color.green}">
+                            <input type="radio" name="option" value="${question.options[2]}">
+                            <label>${question.options[2]}</label>
+                        </div>
+                    </div>
+                `;
+                document.getElementById("next-button").disabled = true;
+            }
+            resetTimer();
+            updateButtons();
+        }
 
-    questions.forEach((question, index) => {
-        const selectedOption = document.querySelector(`input[name="option"]:checked`);
-        const userAnswer = selectedOption ? selectedOption.value : "لم يتم اختيار إجابة";
-        const correctAnswer = question.answer;
+        function resetTimer() {
+            timeRemaining = 15;
+            document.getElementById("timer").innerText = `الوقت المتبقي: ${timeRemaining} ثانية`;
+            clearInterval(timer);
+            timer = setInterval(function() {
+                if (timeRemaining <= 0) {
+                    clearInterval(timer);
+                    nextQuestion();
+                } else {
+                    timeRemaining--;
+                    document.getElementById("timer").innerText = `الوقت المتبقي: ${timeRemaining} ثانية`;
+                }
+            }, 1000);
+        }
 
-        resultHTML += `
-            <div>
-                <strong>السؤال ${index + 1}: </strong> ${question.question}<br>
-                <strong>إجابتك: </strong> ${userAnswer}<br>
-                <strong>الإجابة الصحيحة: </strong> ${correctAnswer}<br><br>
-            </div>
-        `;
-    });
+        function nextQuestion() {
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+            const inputAnswer = document.getElementById("answer-input");
 
-    document.getElementById("result").innerHTML = resultHTML;
-}
-.option {
-    transition: background-color 0.3s ease;
-}
+            if (!selectedOption && !inputAnswer) {
+                alert('من فضلك اختر أو اكتب إجابة');
+                return;
+            }
 
-.option input:checked + label {
-    background-color: lightgreen;
-}
+            let answer = '';
+            if (selectedOption) {
+                answer = selectedOption.value;
+            } else if (inputAnswer) {
+                answer = inputAnswer.value;
+            }
 
-.option input:not(:checked):hover + label {
-    background-color: lightgray;
-}
-function showResult() {
-    document.getElementById("quiz-container").style.display = 'none';
-    document.getElementById("result").innerHTML = `
-        تمت المسابقة! حصلت على ${score} من ${questions.length} إجابة صحيحة. 
-        <br><br><button onclick="restartQuiz()">إعادة المحاولة</button>
-    `;
-}
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            const isCorrect = answer === correctAnswer;
 
-function restartQuiz() {
-    currentQuestionIndex = 0;
-    score = 0;
-    document.getElementById("quiz-container").style.display = 'block';
-    document.getElementById("result").innerHTML = '';
-    loadQuestion();
-}
+            if (isCorrect) {
+                score++;
+                playSound('correct');
+            } else {
+                playSound('incorrect');
+            }
+
+            showResult(isCorrect, answer);
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showFinalResult();
+            }
+        }
+
+        function playSound(result) {
+            const audio = new Audio(result === 'correct' ? 'correct.mp3' : 'incorrect.mp3');
+            audio.play();
+        }
+
+        function showResult(isCorrect, answer) {
+            const resultContainer = document.getElementById("result");
+            const emoji = isCorrect ? "✅" : "❌";
+            resultContainer.innerHTML = `
+                <div>إجابتك: ${answer} ${emoji}</div>
+                <div>الإجابة الصحيحة: ${questions[currentQuestionIndex].answer}</div>
+            `;
+        }
+
+        function showFinalResult() {
+            const resultContainer = document.getElementById("result");
+            resultContainer.innerHTML = `
+                <div>تمت المسابقة! حصلت على ${score} من ${questions.length} إجابة صحيحة.</div>
+                <button onclick="restartQuiz()">إعادة المحاولة</button>
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById("quiz-container").style.display = 'block';
+            document.getElementById("result").innerHTML = '';
+            loadQuestion();
+        }
+
+        function updateButtons() {
+            document.getElementById("previous-button").disabled = currentQuestionIndex === 0;
+            document.getElementById("next-button").disabled = false;
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        loadQuestion();
+    </script>
+
+</body>
+</html>
+
+
 
 
 
