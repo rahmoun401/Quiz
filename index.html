@@ -1,50 +1,187 @@
-import random
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة تحدي المعرفة الكبرى</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            text-align: center;
+            margin: 20px;
+            padding: 0;
+        }
+        .question-container {
+            margin-bottom: 20px;
+        }
+        .question {
+            font-size: 20px;
+        }
+        .options {
+            margin-top: 10px;
+        }
+        .option {
+            margin: 5px 0;
+        }
+        #result {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        #next-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
 
-# الأسئلة والإجابات
-questions = [
-    {"question": "ما هو الغاز الذي يشكل حوالي 78% من الهواء؟", "options": ["أ) الأوكسجين", "ب) النيتروجين", "ج) الأرجون"], "answer": "ب) النيتروجين"},
-    {"question": "من كان أول رئيس للولايات المتحدة الأمريكية؟", "options": ["أ) جورج واشنطن", "ب) توماس جيفرسون", "ج) أبرهام لنكولن"], "answer": "أ) جورج واشنطن"},
-    {"question": "في أي عام أقيمت أولمبياد لندن الصيفية؟", "options": ["أ) 2004", "ب) 2012", "ج) 1996"], "answer": "ب) 2012"},
-    {"question": "من هو مؤلف رواية 'الأبله'؟", "options": ["أ) ليو تولستوي", "ب) فيودور دوستويفسكي", "ج) تشارلز ديكنز"], "answer": "ب) فيودور دوستويفسكي"},
-    {"question": "من هو عالم الفيزياء الذي وضع نظرية النسبية؟", "options": ["أ) إسحاق نيوتن", "ب) ألبرت أينشتاين", "ج) نيكولا تسلا"], "answer": "ب) ألبرت أينشتاين"},
-    {"question": "أين أقيمت أول دورة ألعاب أولمبية؟", "options": ["أ) روما", "ب) أثينا", "ج) لندن"], "answer": "ب) أثينا"},
-    {"question": "ما هو أكبر كوكب في النظام الشمسي؟", "options": ["أ) زحل", "ب) المشتري", "ج) المريخ"], "answer": "ب) المشتري"},
-    {"question": "من هو الفنان الذي رسم لوحة 'الموناليزا'؟", "options": ["أ) مايكل أنجلو", "ب) ليوناردو دا فينشي", "ج) بابلو بيكاسو"], "answer": "ب) ليوناردو دا فينشي"},
-    {"question": "ما هو أطول نهر في العالم؟", "options": ["أ) النيل", "ب) الأمازون", "ج) اليانغتسي"], "answer": "أ) النيل"},
-    {"question": "في أي عام بدأت الحرب العالمية الثانية؟", "options": ["أ) 1914", "ب) 1939", "ج) 1945"], "answer": "ب) 1939"},
-    {"question": "من هو أول إنسان زرع قدمه على سطح القمر؟", "options": ["أ) يوري غاغارين", "ب) نيل آرمسترونغ", "ج) باز ألدرين"], "answer": "ب) نيل آرمسترونغ"},
-    {"question": "ما هو العنصر الكيميائي الذي يرمز له بـ 'O'؟", "options": ["أ) الأوكسجين", "ب) الأوزميوم", "ج) الذهب"], "answer": "أ) الأوكسجين"},
-    {"question": "ما هو الحيوان الذي يعتبر أسرع حيوان بري؟", "options": ["أ) الأسد", "ب) الفهد", "ج) الجمل"], "answer": "ب) الفهد"},
-    {"question": "من هو الشاعر الذي كتب 'الإلياذة'؟", "options": ["أ) هوميروس", "ب) شكسبير", "ج) أحمد شوقي"], "answer": "أ) هوميروس"},
-    {"question": "في أي دولة يقع أكبر جبل في العالم، جبل إيفرست؟", "options": ["أ) نيبال", "ب) الصين", "ج) الهند"], "answer": "أ) نيبال"},
-    {"question": "ما هو الحيوان الذي يطلق عليه اسم 'سفينة الصحراء'؟", "options": ["أ) الجمل", "ب) الحصان", "ج) البعير"], "answer": "أ) الجمل"},
-]
+    <h1>أهلاً بك في مسابقة تحدي المعرفة الكبرى!</h1>
+    <div id="quiz-container">
+        <div id="question-container" class="question-container">
+            <!-- الأسئلة ستظهر هنا -->
+        </div>
+        <button id="next-button" onclick="nextQuestion()">التالي</button>
+    </div>
 
-# دالة لعرض السؤال والتحقق من الإجابة
-def ask_question(question):
-    print(question["question"])
-    for option in question["options"]:
-        print(option)
-    answer = input("اختر الإجابة الصحيحة: ")
-    return answer == question["answer"]
+    <div id="result"></div>
 
-# دالة لبدء المسابقة
-def start_quiz():
-    random.shuffle(questions)  # خلط الأسئلة بشكل عشوائي
-    score = 0
-    for i, question in enumerate(questions[:15], start=1):
-        print(f"\nسؤال {i}:")
-        if ask_question(question):
-            print("إجابة صحيحة!")
-            score += 1
-        else:
-            print("إجابة خاطئة.")
-    print(f"\nتمت المسابقة! حصلت على {score} من 15.")
+    <script>
+        // الأسئلة والإجابات
+        const questions = [
+            {
+                question: "ما هو الغاز الذي يشكل حوالي 78% من الهواء؟",
+                options: ["أ) الأوكسجين", "ب) النيتروجين", "ج) الأرجون"],
+                answer: "ب) النيتروجين"
+            },
+            {
+                question: "من كان أول رئيس للولايات المتحدة الأمريكية؟",
+                options: ["أ) جورج واشنطن", "ب) توماس جيفرسون", "ج) أبرهام لنكولن"],
+                answer: "أ) جورج واشنطن"
+            },
+            {
+                question: "في أي عام أقيمت أولمبياد لندن الصيفية؟",
+                options: ["أ) 2004", "ب) 2012", "ج) 1996"],
+                answer: "ب) 2012"
+            },
+            {
+                question: "من هو مؤلف رواية 'الأبله'؟",
+                options: ["أ) ليو تولستوي", "ب) فيودور دوستويفسكي", "ج) تشارلز ديكنز"],
+                answer: "ب) فيودور دوستويفسكي"
+            },
+            {
+                question: "من هو عالم الفيزياء الذي وضع نظرية النسبية؟",
+                options: ["أ) إسحاق نيوتن", "ب) ألبرت أينشتاين", "ج) نيكولا تسلا"],
+                answer: "ب) ألبرت أينشتاين"
+            },
+            {
+                question: "أين أقيمت أول دورة ألعاب أولمبية؟",
+                options: ["أ) روما", "ب) أثينا", "ج) لندن"],
+                answer: "ب) أثينا"
+            },
+            {
+                question: "ما هو أكبر كوكب في النظام الشمسي؟",
+                options: ["أ) زحل", "ب) المشتري", "ج) المريخ"],
+                answer: "ب) المشتري"
+            },
+            {
+                question: "من هو الفنان الذي رسم لوحة 'الموناليزا'؟",
+                options: ["أ) مايكل أنجلو", "ب) ليوناردو دا فينشي", "ج) بابلو بيكاسو"],
+                answer: "ب) ليوناردو دا فينشي"
+            },
+            {
+                question: "ما هو أطول نهر في العالم؟",
+                options: ["أ) النيل", "ب) الأمازون", "ج) اليانغتسي"],
+                answer: "أ) النيل"
+            },
+            {
+                question: "في أي عام بدأت الحرب العالمية الثانية؟",
+                options: ["أ) 1914", "ب) 1939", "ج) 1945"],
+                answer: "ب) 1939"
+            },
+            {
+                question: "من هو أول إنسان زرع قدمه على سطح القمر؟",
+                options: ["أ) يوري غاغارين", "ب) نيل آرمسترونغ", "ج) باز ألدرين"],
+                answer: "ب) نيل آرمسترونغ"
+            },
+            {
+                question: "ما هو العنصر الكيميائي الذي يرمز له بـ 'O'؟",
+                options: ["أ) الأوكسجين", "ب) الأوزميوم", "ج) الذهب"],
+                answer: "أ) الأوكسجين"
+            },
+            {
+                question: "ما هو الحيوان الذي يعتبر أسرع حيوان بري؟",
+                options: ["أ) الأسد", "ب) الفهد", "ج) الجمل"],
+                answer: "ب) الفهد"
+            },
+            {
+                question: "من هو الشاعر الذي كتب 'الإلياذة'؟",
+                options: ["أ) هوميروس", "ب) شكسبير", "ج) أحمد شوقي"],
+                answer: "أ) هوميروس"
+            },
+            {
+                question: "في أي دولة يقع أكبر جبل في العالم، جبل إيفرست؟",
+                options: ["أ) نيبال", "ب) الصين", "ج) الهند"],
+                answer: "أ) نيبال"
+            },
+            {
+                question: "ما هو الحيوان الذي يطلق عليه اسم 'سفينة الصحراء'؟",
+                options: ["أ) الجمل", "ب) الحصان", "ج) البعير"],
+                answer: "أ) الجمل"
+            }
+        ];
 
-# بدء المسابقة
-if __name__ == "__main__":
-    print("أهلاً بك في مسابقة تحدي المعرفة الكبرى!")
-    start_quiz()
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            const questionContainer = document.getElementById("question-container");
+            questionContainer.innerHTML = `
+                <div class="question">${question.question}</div>
+                <div class="options">
+                    ${question.options.map(option => `
+                        <div class="option">
+                            <input type="radio" name="option" value="${option}">
+                            <label>${option}</label>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+            if (!selectedOption) {
+                alert('من فضلك اختر إجابة');
+                return;
+            }
+
+            const answer = selectedOption.value;
+            if (answer === questions[currentQuestionIndex].answer) {
+                score++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById("quiz-container").style.display = 'none';
+            document.getElementById("result").innerHTML = `تمت المسابقة! حصلت على ${score} من ${questions.length} إجابة صحيحة.`;
+        }
+
+        // بداية المسابقة
+        loadQuestion();
+    </script>
+
+</body>
+</html>
 
 
 
