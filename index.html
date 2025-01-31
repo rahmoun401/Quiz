@@ -76,6 +76,18 @@
             width: 50%;
             font-size: 18px;
         }
+        #thank-you-message {
+            background-color: #8e44ad;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            font-size: 20px;
+            margin-top: 20px;
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto;
+        }
     </style>
 </head>
 <body>
@@ -95,6 +107,10 @@
     </div>
 
     <div id="result"></div>
+
+    <div id="thank-you-message">
+        <p>شكراً لك على مشاركتك!</p>
+    </div>
 
     <script>
         const questions = [
@@ -275,6 +291,12 @@
                 <div>تمت المسابقة! حصلت على ${score} من ${questions.length} إجابة صحيحة.</div>
                 <button onclick="restartQuiz()">إعادة المحاولة</button>
             `;
+            showThankYouMessage();
+        }
+
+        function showThankYouMessage() {
+            const thankYouMessage = document.getElementById("thank-you-message");
+            thankYouMessage.style.display = 'block';
         }
 
         function restartQuiz() {
