@@ -112,7 +112,7 @@
     <div id="result"></div>
 
     <div id="thank-you-message">
-        <p>شكراً لك على مشاركتك!</p>
+        <p>شكراً لك على مشاركتك! من رحمون</p>
     </div>
 
     <script>
@@ -256,10 +256,9 @@
 
         function showResult(isCorrect, answer) {
             const resultContainer = document.getElementById("result");
-            const emoji = isCorrect ? "✅" : "❌";
+            const emoji = isCorrect ? "😊" : "☹️";
             resultContainer.innerHTML = `
                 <div>إجابتك: ${answer} ${emoji}</div>
-                <div>الإجابة الصحيحة: ${questions[currentQuestionIndex].answer}</div>
             `;
         }
 
