@@ -42,6 +42,37 @@
         .emoji {
             font-size: 30px;
         }
+        .open-question input {
+            padding: 10px;
+            font-size: 18px;
+            width: 300px;
+            margin-top: 10px;
+        }
+        .open-question button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #4682b4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .open-question button:hover {
+            background-color: #5f9ea0;
+        }
+        #next-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #32cd32;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        #next-btn:hover {
+            background-color: #228b22;
+        }
     </style>
 </head>
 <body>
@@ -60,10 +91,29 @@
     <script>
         // البيانات
         const questions = [
+            // أسئلة اختيارية (15 سؤالاً)
             { type: "choice", text: "ما هو جمع كلمة 'كتاب'؟", choices: ["مكتبات", "كتب", "كتيبات"], correct: "كتب" },
             { type: "choice", text: "من هو مؤلف كتاب 'الأيام'؟", choices: ["طه حسين", "نجيب محفوظ", "أحمد أمين"], correct: "طه حسين" },
-            { type: "open", text: "ما هي عاصمة المغرب؟", correct: "الرباط" },
-            // أضف المزيد من الأسئلة هنا
+            { type: "choice", text: "ما هي عاصمة المغرب؟", choices: ["الدار البيضاء", "الرباط", "مراكش"], correct: "الرباط" },
+            { type: "choice", text: "ما هو البحر الذي يقع بين تركيا واليونان؟", choices: ["البحر الأحمر", "البحر الأبيض المتوسط", "بحر إيجة"], correct: "بحر إيجة" },
+            { type: "choice", text: "من هو الشاعر الذي لقب بـ'أمير الشعراء'؟", choices: ["أحمد شوقي", "محمود درويش", "نزار قباني"], correct: "أحمد شوقي" },
+            { type: "choice", text: "ما هي أطول قصيدة في الأدب العربي؟", choices: ["المعلقات", "ألفية ابن مالك", "البحر الطويل"], correct: "المعلقات" },
+            { type: "choice", text: "ما هو اسم العملة اليابانية؟", choices: ["الدولار", "اليوان", "الين"], correct: "الين" },
+            { type: "choice", text: "من هو العالم الذي اكتشف الجاذبية؟", choices: ["ألبرت أينشتاين", "إسحاق نيوتن", "غاليليو غاليلي"], correct: "إسحاق نيوتن" },
+            { type: "choice", text: "ما هو أصغر كوكب في المجموعة الشمسية؟", choices: ["عطارد", "الزهرة", "المريخ"], correct: "عطارد" },
+            { type: "choice", text: "ما هي اللغة الرسمية للبرازيل؟", choices: ["الإسبانية", "البرتغالية", "الإنجليزية"], correct: "البرتغالية" },
+            { type: "choice", text: "من هو مؤلف كتاب 'صحيح البخاري'؟", choices: ["البخاري", "مسلم", "الترمذي"], correct: "البخاري" },
+            { type: "choice", text: "ما هي السورة التي تسمى 'قلب القرآن'؟", choices: ["البقرة", "يس", "الفاتحة"], correct: "يس" },
+            { type: "choice", text: "ما هو اسم أطول نهر في العالم؟", choices: ["نهر النيل", "نهر الأمازون", "نهر اليانغتسي"], correct: "نهر الأمازون" },
+            { type: "choice", text: "من هو أول رئيس للولايات المتحدة الأمريكية؟", choices: ["جورج واشنطن", "توماس جيفرسون", "أبراهام لينكولن"], correct: "جورج واشنطن" },
+            { type: "choice", text: "ما هي عاصمة فرنسا؟", choices: ["برلين", "روما", "باريس"], correct: "باريس" },
+
+            // أسئلة مفتوحة (5 أسئلة)
+            { type: "open", text: "ما هي عاصمة إسبانيا؟", correct: "مدريد" },
+            { type: "open", text: "من هو مؤلف كتاب 'الكوميديا الإلهية'؟", correct: "دانتي أليغييري" },
+            { type: "open", text: "ما هو اسم أطول جبل في العالم؟", correct: "جبل إيفرست" },
+            { type: "open", text: "ما هي العملة الرسمية للمملكة المتحدة؟", correct: "الجنية الإسترليني" },
+            { type: "open", text: "من هو العالم الذي اخترع المصباح الكهربائي؟", correct: "توماس إديسون" }
         ];
 
         let currentQuestionIndex = 0;
