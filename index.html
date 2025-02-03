@@ -82,6 +82,34 @@ function playIncorrect() {
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تشغيل الصوت</title>
+</head>
+<body>
+
+    <h2>اختبار تشغيل الصوت 🎵</h2>
+
+    <button onclick="playCorrect()">✅ صوت الإجابة الصحيحة</button>
+    <button onclick="playIncorrect()">❌ صوت الإجابة الخاطئة</button>
+
+    <script>
+        function playCorrect() {
+            var audio = new Audio('correct.mp3');
+            audio.play();
+        }
+
+        function playIncorrect() {
+            var audio = new Audio('incorrect.mp3');
+            audio.play();
+        }
+    </script>
+
+</body>
+</html>
 
   
 
