@@ -30,6 +30,11 @@ let correctAnswersCount = 0;
 let timeLeft = 15;
 let timerInterval;
 
+  // تحميل الصوت من الإنترنت:
+  let correctSound = new Audio('./mp3/right-answer.mp3');  // رابط الصوت الصحيح
+  let incorrectSound = new Audio('./mp3/wrong-answer.mp3');  // رابط الصوت الخاطئ
+
+
 // عرض السؤال
 function showQuestion() {
     const question = questions[currentQuestionIndex];
@@ -59,16 +64,20 @@ function checkAnswer(selectedAnswer) {
     if (selectedAnswer === correctAnswer) {
         showResult("إجابة صحيحة! 😊", "🟢");
         correctAnswersCount++;
+        playCorrect();  // تشغيل الصوت الصحيح عند الإجابة الصحيحة
     } else {
         showResult(`إجابة خاطئة! 😢 الإجابة الصحيحة هي: ${correctAnswer}`, "🔴");
+        playIncorrect();  // تشغيل الصوت الخاطئ عند الإجابة الخاطئة
     }
     document.getElementById("next-btn").style.display = "block";
 }
 
+// التحقق من الإجابة المفتوحة
 function checkOpenAnswer() {
     const userAnswer = document.getElementById("answer-input").value.trim();
     checkAnswer(userAnswer);
 }
+
 
 // عرض النتيجة
 function showResult(message, emoji) {
@@ -118,6 +127,24 @@ function startTimer() {
         }
     }, 1000);
 }
+
+
+
+  // دالة تشغيل الصوت الصحيح
+  function playCorrect() {
+      correctSound.currentTime = 0; // إعادة تشغيل الصوت من البداية
+      correctSound.play()
+      .then(() => console.log("✅ تشغيل الصوت بنجاح"))
+      .catch(error => console.log("❌ خطأ في تشغيل الصوت:", error));
+  }
+
+  // دالة تشغيل الصوت الخاطئ
+  function playIncorrect() {
+      incorrectSound.currentTime = 0; // إعادة تشغيل الصوت من البداية
+      incorrectSound.play()
+      .then(() => console.log("✅ تشغيل الصوت بنجاح"))
+      .catch(error => console.log("❌ خطأ في تشغيل الصوت:", error));
+  }
 
 // بدء المسابقة
 showQuestion();

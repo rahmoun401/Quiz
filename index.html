@@ -23,304 +23,3 @@
     <script src="./app.js"></script>
 </body>
 </html>
-<audio id="correctSound" src="correct.mp3"></audio>
-<audio id="incorrectSound" src="incorrect.mp3"></audio>
-
-<button onclick="playSound(true)">إجابة صحيحة ✅</button>
-<button onclick="playSound(false)">إجابة خاطئة ❌</button>
-
-<script>
-function playSound(isCorrect) {
-    let sound = isCorrect ? document.getElementById('correctSound') : document.getElementById('incorrectSound');
-    sound.play();
-}
-</script>
-<audio id="correctSound" src="correct.mp3"></audio>
-<audio id="incorrectSound" src="incorrect.mp3"></audio>
-
-<button onclick="playSound(true)">إجابة صحيحة ✅</button>
-<button onclick="playSound(false)">إجابة خاطئة ❌</button>
-
-<script>
-function playSound(isCorrect) {
-    let sound = isCorrect ? document.getElementById('correctSound') : document.getElementById('incorrectSound');
-    sound.play();
-}
-</script>
-<button onclick="playCorrect()">إجابة صحيحة ✅</button>
-<button onclick="playIncorrect()">إجابة خاطئة ❌</button>
-
-<script>
-var correctSound = new Howl({ src: ['correct.mp3'] });
-var incorrectSound = new Howl({ src: ['incorrect.mp3'] });
-
-function playCorrect() {
-    correctSound.play();
-}
-
-function playIncorrect() {
-    incorrectSound.play();
-}
-</script>
-<audio id="correctSound" src="correct.wav"></audio>
-<audio id="incorrectSound" src="incorrect.wav"></audio>
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار الصوت</title>
-</head>
-<body>
-
-    <h2>اختبار تشغيل الصوت 🎵</h2>
-
-    <audio controls>
-        <source src="correct.mp3" type="audio/mpeg">
-        متصفحك لا يدعم تشغيل الصوت.
-    </audio>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تشغيل الصوت</title>
-</head>
-<body>
-
-    <h2>اختبار تشغيل الصوت 🎵</h2>
-
-    <button onclick="playCorrect()">✅ صوت الإجابة الصحيحة</button>
-    <button onclick="playIncorrect()">❌ صوت الإجابة الخاطئة</button>
-
-    <script>
-        function playCorrect() {
-            var audio = new Audio('correct.mp3');
-            audio.play();
-        }
-
-        function playIncorrect() {
-            var audio = new Audio('incorrect.mp3');
-            audio.play();
-        }
-    </script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار الصوت</title>
-</head>
-<body>
-
-    <h2>اختبار تشغيل الصوت 🎵</h2>
-
-    <button onclick="playCorrect()">✅ صوت الإجابة الصحيحة</button>
-    <button onclick
-    <!DOCTYPE html>
-    <html lang="ar">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>اختبار تشغيل الصوت</title>
-    </head>
-    <body>
-    
-        <h2>اختبار تشغيل الصوت تلقائيًا</h2>
-    
-        <audio id="testAudio" autoplay>
-            <source src="correct.mp3" type="audio/mpeg">
-            متصفحك لا يدعم تشغيل الصوت.
-        </audio>
-    
-    </body>
-    </html>
-    <!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار تشغيل الصوت</title>
-</head>
-<body>
-
-    <h2>اختبار تشغيل الصوت تلقائيًا</h2>
-
-    <audio id="testAudio" autoplay>
-        <source src="correct.mp3" type="audio/mpeg">
-        متصفحك لا يدعم تشغيل الصوت.
-    </audio>
-
-</body>
-</html>
-<audio controls>
-    <source src="beep-07.wav" type="audio/wav">
-    متصفحك لا يدعم تشغيل هذا الصوت.
-</audio>
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار تشغيل الصوت</title>
-</head>
-<body>
-
-    <h2>اختبار تشغيل الصوت 🎵</h2>
-
-    <button onclick="playCorrect()">✅ صوت الإجابة الصحيحة</button>
-    <button onclick="playIncorrect()">❌ صوت الإجابة الخاطئة</button>
-
-    <script>
-        // تحميل الصوت مسبقًا لتحسين الأداء
-        let correctSound = new Audio('correct.mp3');
-        let incorrectSound = new Audio('incorrect.mp3');
-
-        function playCorrect() {
-            correctSound.currentTime = 0; // إعادة تشغيل الصوت من البداية
-            correctSound.play()
-            .then(() => console.log("✅ تشغيل الصوت بنجاح"))
-            .catch(error => console.log("❌ خطأ في تشغيل الصوت:", error));
-        }
-
-        function playIncorrect() {
-            incorrectSound.currentTime = 0; // إعادة تشغيل الصوت من البداية
-            incorrectSound.play()
-            .then(() => console.log("✅ تشغيل الصوت بنجاح"))
-            .catch(error => console.log("❌ خطأ في تشغيل الصوت:", error));
-        }
-    </script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار تشغيل الصوت</title>
-</head>
-<body>
-
-    <h2>اختبار تشغيل الصوت 🎵</h2>
-
-    <button onclick="playCorrect()">✅ صوت الإجابة الصحيحة</button>
-    <button onclick="playIncorrect()">❌ صوت الإجابة الخاطئة</button>
-
-    <script>
-        // تحميل الصوت مسبقًا لتحسين الأداء
-        let correctSound = new Audio('correct.mp3');
-        let incorrectSound = new Audio('incorrect.mp3');
-
-        function playCorrect() {
-            correctSound.currentTime = 0; // إعادة تشغيل الصوت من البداية
-            correctSound.play()
-            .then(() => console.log("✅ تشغيل الصوت بنجاح"))
-            .catch(error => console.log("❌ خطأ في تشغيل الصوت:", error));
-        }
-
-        function playIncorrect() {
-            incorrectSound.currentTime = 0; // إعادة تشغيل الصوت من البداية
-            incorrectSound.play()
-            .then(() => console.log("✅ تشغيل الصوت بنجاح"))
-            .catch(error => console.log("❌ خطأ في تشغيل الصوت:", error));
-        }
-    </script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار الصوت</title>
-</head>
-<body>
-
-    <h2>اختبار تشغيل الصوت 🎵</h2>
-
-    <!-- أزرار للإجابة الصحيحة والخاطئة -->
-    <button onclick="playCorrect()">✅ صوت الإجابة الصحيحة</button>
-    <button onclick="playIncorrect()">❌ صوت الإجابة الخاطئة</button>
-
-    <script>
-        // تحميل الصوت مسبقًا لتحسين الأداء
-        let correctSound = new Audio('correct.mp3');  // استبدل بـ اسم الملف الصحيح إذا كان مختلفًا
-        let incorrectSound = new Audio('incorrect.mp3');  // استبدل بـ اسم الملف الخاطئ إذا كان مختلفًا
-
-        // دالة تشغيل الصوت الصحيح
-        function playCorrect() {
-            correctSound.currentTime = 0; // إعادة تشغيل الصوت من البداية
-            correctSound.play()
-            .then(() => console.log("✅ تشغيل الصوت بنجاح"))
-            .catch(error => console.log("❌ خطأ في تشغيل الصوت:", error));
-        }
-
-        // دالة تشغيل الصوت الخاطئ
-        function playIncorrect() {
-            incorrectSound.currentTime = 0; // إعادة تشغيل الصوت من البداية
-            incorrectSound.play()
-            .then(() => console.log("✅ تشغيل الصوت بنجاح"))
-            .catch(error => console.log("❌ خطأ في تشغيل الصوت:", error));
-        }
-    </script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار تشغيل الصوت</title>
-</head>
-<body>
-
-    <h2>اختبار تشغيل الصوت 🎵</h2>
-
-    <!-- أزرار للإجابة الصحيحة والخاطئة -->
-    <button onclick="playCorrect()">✅ صوت الإجابة الصحيحة</button>
-    <button onclick="playIncorrect()">❌ صوت الإجابة الخاطئة</button>
-
-    <script>
-        // تحميل الصوت من الإنترنت
-        let correctSound = new Audio('https://www.soundjay.com/button/beep-07.wav');  // رابط الصوت الصحيح
-        let incorrectSound = new Audio('https://www.soundjay.com/button/beep-08b.wav');  // رابط الصوت الخاطئ
-
-        // دالة تشغيل الصوت الصحيح
-        function playCorrect() {
-            correctSound.currentTime = 0; // إعادة تشغيل الصوت من البداية
-            correctSound.play()
-            .then(() => console.log("✅ تشغيل الصوت بنجاح"))
-            .catch(error => console.log("❌ خطأ في تشغيل الصوت:", error));
-        }
-
-        // دالة تشغيل الصوت الخاطئ
-        function playIncorrect() {
-            incorrectSound.currentTime = 0; // إعادة تشغيل الصوت من البداية
-            incorrectSound.play()
-            .then(() => console.log("✅ تشغيل الصوت بنجاح"))
-            .catch(error => console.log("❌ خطأ في تشغيل الصوت:", error));
-        }
-    </script>
-
-</body>
-</html>
-
-let correctSound = new Audio('sounds/correct.mp3');
-let incorrectSound = new Audio('sounds/incorrect.mp3');
-
-
-
-
-
-
-
-
