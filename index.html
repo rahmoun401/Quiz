@@ -274,6 +274,45 @@ function playIncorrect() {
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تشغيل الصوت</title>
+</head>
+<body>
+
+    <h2>اختبار تشغيل الصوت 🎵</h2>
+
+    <!-- أزرار للإجابة الصحيحة والخاطئة -->
+    <button onclick="playCorrect()">✅ صوت الإجابة الصحيحة</button>
+    <button onclick="playIncorrect()">❌ صوت الإجابة الخاطئة</button>
+
+    <script>
+        // تحميل الصوت من الإنترنت
+        let correctSound = new Audio('https://www.soundjay.com/button/beep-07.wav');  // رابط الصوت الصحيح
+        let incorrectSound = new Audio('https://www.soundjay.com/button/beep-08b.wav');  // رابط الصوت الخاطئ
+
+        // دالة تشغيل الصوت الصحيح
+        function playCorrect() {
+            correctSound.currentTime = 0; // إعادة تشغيل الصوت من البداية
+            correctSound.play()
+            .then(() => console.log("✅ تشغيل الصوت بنجاح"))
+            .catch(error => console.log("❌ خطأ في تشغيل الصوت:", error));
+        }
+
+        // دالة تشغيل الصوت الخاطئ
+        function playIncorrect() {
+            incorrectSound.currentTime = 0; // إعادة تشغيل الصوت من البداية
+            incorrectSound.play()
+            .then(() => console.log("✅ تشغيل الصوت بنجاح"))
+            .catch(error => console.log("❌ خطأ في تشغيل الصوت:", error));
+        }
+    </script>
+
+</body>
+</html>
 
   
 
