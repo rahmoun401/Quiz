@@ -47,6 +47,21 @@ function playSound(isCorrect) {
     sound.play();
 }
 </script>
+<button onclick="playCorrect()">إجابة صحيحة ✅</button>
+<button onclick="playIncorrect()">إجابة خاطئة ❌</button>
+
+<script>
+var correctSound = new Howl({ src: ['correct.mp3'] });
+var incorrectSound = new Howl({ src: ['incorrect.mp3'] });
+
+function playCorrect() {
+    correctSound.play();
+}
+
+function playIncorrect() {
+    incorrectSound.play();
+}
+</script>
 
   
 
